@@ -243,7 +243,7 @@ class TestERPCore:
 
     def test_create_opportunity(self, erp_core):
         from aurora.enterprise.erp import Opportunity
-        opp = Opportunity(lead_id="opp1", org_id="org1", name="Big Deal", value=100000, probability=0.5)
+        opp = Opportunity(opp_id="opp1", org_id="org1", name="Big Deal", value=100000, probability=0.5)
         erp_core.opportunities[opp.opp_id] = opp
         assert len(erp_core.opportunities) == 1
 
@@ -269,16 +269,16 @@ class TestERPCore:
 
     def test_create_task(self, erp_core):
         from aurora.enterprise.erp import Task, TaskStatus
-        task = Task(invoice_id="t1", org_id="org1", project_id="p1", title="Design",
+        task = Task(task_id="t1", org_id="org1", project_id="p1", title="Design",
                      status=TaskStatus.IN_PROGRESS, actual_hours=10, cost=1000)
         erp_core.tasks[task.task_id] = task
         assert len(erp_core.tasks) == 1
 
     def test_task_filtering(self, erp_core):
         from aurora.enterprise.erp import Task, TaskStatus
-        erp_core.tasks["t1"] = Task(invoice_id="t1", org_id="org1", project_id="p1",
+        erp_core.tasks["t1"] = Task(task_id="t1", org_id="org1", project_id="p1",
                                       title="Task 1", status=TaskStatus.TODO)
-        erp_core.tasks["t2"] = Task(invoice_id="t2", org_id="org1", project_id="p1",
+        erp_core.tasks["t2"] = Task(task_id="t2", org_id="org1", project_id="p1",
                                       title="Task 2", status=TaskStatus.DONE)
         todo_tasks = erp_core.get_org_tasks("org1", status=TaskStatus.TODO)
         assert len(todo_tasks) == 1
@@ -316,7 +316,7 @@ class TestERPCore:
 
     def test_create_asset(self, erp_core):
         from aurora.enterprise.erp import Asset, AssetType, AssetStatus
-        asset = Asset(invoice_id="a1", org_id="org1", name="Canon C70",
+        asset = Asset(asset_id="a1", org_id="org1", name="Canon C70",
                        asset_type=AssetType.HARDWARE, purchase_price=5500,
                        current_value=4200, status=AssetStatus.AVAILABLE)
         erp_core.assets[asset.asset_id] = asset
@@ -768,11 +768,11 @@ class TestEndToEnd:
         erp_core.leads[lead.lead_id] = lead
 
         # Convert to opportunity
-        opp = Opportunity(lead_id="opp1", org_id="org1", name="Nike Campaign", value=75000, probability=0.6)
+        opp = Opportunity(opp_id="opp1", org_id="org1", name="Nike Campaign", value=75000, probability=0.6)
         erp_core.opportunities[opp.opp_id] = opp
 
         # Create project task
-        task = Task(invoice_id="t1", org_id="org1", project_id="p1", title="Design", status=TaskStatus.TODO)
+        task = Task(task_id="t1", org_id="org1", project_id="p1", title="Design", status=TaskStatus.TODO)
         erp_core.tasks[task.task_id] = task
 
         # Create invoice

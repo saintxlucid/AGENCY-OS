@@ -99,32 +99,32 @@ credentials/
 ~*
 
 # ─── AGENCY-OS repo hygiene (Playground-only, NEVER push upstream) ───
-# Large binaries / toolchains
-.tools/
-Tools/*.exe
-Tools/*.mp4
+# Large binaries / toolchains (rooted — must NOT match aurora/memory source)
+/.tools/
+/Tools/*.exe
+/Tools/*.mp4
 *.exe
 *.pak
 *.dll
 *.7z
-# Heavy local data / media
-Media/
-Memory/
-Knowledge/
-Archive/
-Experiments/
-Playground/
-SAMP MODS/
-astra-multimedia-toolkit/
-demo_output/
-output/
-tmp/
-.mcp/
-.opencode/
-venv/
-env/
-agency_os_data/
-aurora_memory/
+# Heavy local data / media (rooted — must NOT match nested source dirs)
+/Media/
+/Memory/
+/Knowledge/
+/Archive/
+/Experiments/
+/Playground/
+/SAMP MODS/
+/astra-multimedia-toolkit/
+/demo_output/
+/output/
+/tmp/
+/.mcp/
+/.opencode/
+/venv/
+/env/
+/agency_os_data/
+/aurora_memory/
 *.mp4
 *.mov
 *.avi

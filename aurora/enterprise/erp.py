@@ -52,6 +52,7 @@ class Lead:
 @dataclass
 class Opportunity:
     opp_id: str; org_id: str; name: str; contact_id: Optional[str] = None
+    lead_id: Optional[str] = None
     stage: str = "discovery"; value: float = 0.0; probability: float = 0.0
     expected_close: Optional[str] = None; actual_close: Optional[str] = None
     owner_id: Optional[str] = None; source: Optional[str] = None

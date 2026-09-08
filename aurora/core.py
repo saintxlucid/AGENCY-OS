@@ -81,6 +81,7 @@ class ProjectContext:
     brand_guidelines: Optional[Dict] = None
     target_audience: Optional[str] = None
     goals: List[str] = field(default_factory=list)
+    status: str = "planning"
     created_at: str = field(default_factory=lambda: datetime.now().isoformat())
     updated_at: str = field(default_factory=lambda: datetime.now().isoformat())
 
