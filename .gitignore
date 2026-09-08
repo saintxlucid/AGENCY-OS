@@ -1,0 +1,131 @@
+# ═══════════════════════════════════════════════════════════════
+# AGENCY OS — .gitignore
+# ═══════════════════════════════════════════════════════════════
+
+# ─── Python ───
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+dist/
+build/
+eggs/
+sdist/
+develop-eggs/
+wheels/
+*.manifest
+*.spec
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ─── Virtual Environment ───
+venv/
+.venv/
+env/
+ENV/
+.env.local
+.env.*.local
+
+# ─── IDE ───
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── Testing ───
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# ─── Type Checking ───
+.mypy_cache/
+.pyre/
+.pytype/
+.ruff_cache/
+
+# ─── Project Data (generated at runtime) ───
+aurora_memory/
+agency_os_data/
+uploads/
+output/
+tmp/
+workflows/
+prompts_data/
+test_data/
+
+# ─── Logs ───
+*.log
+logs/
+
+# ─── Database ───
+*.db
+*.sqlite
+*.sqlite3
+
+# ─── OS ───
+.DS_Store
+Thumbs.db
+$RECYCLE.BIN/
+
+# ─── Secrets (NEVER commit) ───
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+secrets/
+credentials/
+
+# ─── Temporary Files ───
+*.tmp
+*.temp
+*.bak
+*.swp
+~*
+
+# ─── AGENCY-OS repo hygiene (Playground-only, NEVER push upstream) ───
+# Large binaries / toolchains
+.tools/
+Tools/*.exe
+Tools/*.mp4
+*.exe
+*.pak
+*.dll
+*.7z
+# Heavy local data / media
+Media/
+Memory/
+Knowledge/
+Archive/
+Experiments/
+Playground/
+SAMP MODS/
+astra-multimedia-toolkit/
+demo_output/
+output/
+tmp/
+.mcp/
+.opencode/
+venv/
+env/
+agency_os_data/
+aurora_memory/
+*.mp4
+*.mov
+*.avi
+*.mkv

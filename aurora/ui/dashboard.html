@@ -1,0 +1,126 @@
+        <!-- ─── ERP ─── -->
+        <div id="page-erp" class="page hidden fade-in">
+            <h2 class="text-3xl font-bold mb-6">ERP Dashboard</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white dark:bg-dark-200 rounded-xl p-5 shadow"><p class="text-sm text-gray-500">Outstanding</p><p class="text-2xl font-bold mt-1">$45,000</p></div>
+                <div class="bg-white dark:bg-dark-200 rounded-xl p-5 shadow"><p class="text-sm text-gray-500">Pipeline</p><p class="text-2xl font-bold mt-1">$340,000</p></div>
+                <div class="bg-white dark:bg-dark-200 rounded-xl p-5 shadow"><p class="text-sm text-gray-500">Team Members</p><p class="text-2xl font-bold mt-1">12</p></div>
+                <div class="bg-white dark:bg-dark-200 rounded-xl p-5 shadow"><p class="text-sm text-gray-500">Active Leads</p><p class="text-2xl font-bold mt-1">8</p></div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white dark:bg-dark-200 rounded-xl p-6 shadow">
+                    <h3 class="font-semibold mb-4">Invoices</h3>
+                    <table class="w-full text-sm">
+                        <thead><tr class="text-left text-gray-500 border-b"><th class="pb-2">Number</th><th class="pb-2">Client</th><th class="pb-2">Amount</th><th class="pb-2">Status</th></tr></thead>
+                        <tbody>
+                            <tr class="border-b"><td class="py-2">INV-001</td><td>Nike</td><td class="py-2">$25,000</td><td><span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs rounded">Sent</span></td></tr>
+                            <tr class="border-b"><td class="py-2">INV-002</td><td>Adidas</td><td class="py-2">$40,000</td><td><span class="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded">Overdue</span></td></tr>
+                            <tr class="border-b"><td class="py-2">INV-003</td><td>Apple</td><td class="py-2">$60,000</td><td><span class="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded">Paid</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="bg-white dark:bg-dark-200 rounded-xl p-6 shadow">
+                    <h3 class="font-semibold mb-4">Sales Pipeline</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between"><span class="text-sm">Prospecting</span><span class="text-sm font-medium">$180,000 (3)</span></div>
+                        <div class="h-2 bg-gray-200 rounded-full"><div class="h-2 bg-blue-500 rounded-full" style="width:53%"></div></div>
+                        <div class="flex items-center justify-between"><span class="text-sm">Proposal</span><span class="text-sm font-medium">$95,000 (2)</span></div>
+                        <div class="h-2 bg-gray-200 rounded-full"><div class="h-2 bg-green-500 rounded-full" style="width:28%"></div></div>
+                        <div class="flex items-center justify-between"><span class="text-sm">Negotiation</span><span class="text-sm font-medium">$65,000 (1)</span></div>
+                        <div class="h-2 bg-gray-200 rounded-full"><div class="h-2 bg-orange-500 rounded-full" style="width:19%"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── AI STUDIO ─── -->
+        <div id="page-ai" class="page hidden fade-in">
+            <h2 class="text-3xl font-bold mb-6">AI Studio</h2>
+            <div class="bg-white dark:bg-dark-200 rounded-xl p-6 shadow mb-6">
+                <textarea id="ai-question" placeholder="Ask about your agency data... e.g., 'Which clients are at risk of churning?'" class="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-lg dark:bg-dark-100" rows="3"></textarea>
+                <button onclick="askAI()" class="mt-3 px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">Ask AI</button>
+            </div>
+            <div id="ai-results" class="hidden">
+                <div class="bg-white dark:bg-dark-200 rounded-xl p-6 shadow">
+                    <h3 class="font-semibold mb-3">AI Response</h3>
+                    <div id="ai-response-content" class="text-sm text-gray-700 dark:text-gray-300 space-y-2"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── AGENTS ─── -->
+        <div id="page-agents" class="page hidden fade-in">
+            <h2 class="text-3xl font-bold mb-6">AI Agents</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="card bg-white dark:bg-dark-200 rounded-xl p-6 shadow"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center"><svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div><div><h3 class="font-semibold">Creative Director</h3><p class="text-xs text-gray-500">All creative domains</p></div></div><p class="text-sm text-gray-600">Strategy, quality assessment, brand alignment</p></div>
+                <div class="card bg-white dark:bg-dark-200 rounded-xl p-6 shadow"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center"><svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div><div><h3 class="font-semibold">Researcher</h3><p class="text-xs text-gray-500">Intelligence Suite</p></div></div><p class="text-sm text-gray-600">Market research, competitor analysis, trend detection</p></div>
+                <div class="card bg-white dark:bg-dark-200 rounded-xl p-6 shadow"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"><svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></div><div><h3 class="font-semibold">Copywriter</h3><p class="text-xs text-gray-500">Narrative + Marketing</p></div></div><p class="text-sm text-gray-600">Copy generation, brand voice, messaging strategy</p></div>
+                <div class="card bg-white dark:bg-dark-200 rounded-xl p-6 shadow"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center"><svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14"/></svg></div><div><h3 class="font-semibold">Art Director</h3><p class="text-xs text-gray-500">Visual + Symbolism</p></div></div><p class="text-sm text-gray-600">Visual direction, composition, color strategy</p></div>
+                <div class="card bg-white dark:bg-dark-200 rounded-xl p-6 shadow"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center"><svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg></div><div><h3 class="font-semibold">Developer</h3><p class="text-xs text-gray-500">Code + Design</p></div></div><p class="text-sm text-gray-600">Front-end development, design-to-code</p></div>
+                <div class="card bg-white dark:bg-dark-200 rounded-xl p-6 shadow"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center"><svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div><h3 class="font-semibold">QA Agent</h3><p class="text-xs text-gray-500">All Engines</p></div></div><p class="text-sm text-gray-600">Quality assurance, accessibility, brand compliance</p></div>
+            </div>
+        </div>
+
+        <!-- ─── WORKFLOWS ─── -->
+        <div id="page-workflows" class="page hidden fade-in">
+            <div class="flex items-center justify-between mb-6"><h2 class="text-3xl font-bold">Workflows</h2><button class="px-4 py-2 bg-primary-600 text-white rounded-lg">+ New Workflow</button></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="card bg-white dark:bg-dark-200 rounded-xl p-6 shadow"><span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded">Active</span><h3 class="font-semibold mt-3">Campaign Production</h3><p class="text-sm text-gray-500 mt-1">Research → Brief → Creative → Production → Delivery</p><p class="text-xs text-gray-400 mt-3">Run 24 times | Last: 2h ago</p></div>
+                <div class="card bg-white dark:bg-dark-200 rounded-xl p-6 shadow"><span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded">Active</span><h3 class="font-semibold mt-3">Invoice Reminders</h3><p class="text-sm text-gray-500 mt-1">Check overdue → Send reminder → Update status</p><p class="text-xs text-gray-400 mt-3">Run 156 times | Last: 1d ago</p></div>
+                <div class="card bg-white dark:bg-dark-200 rounded-xl p-6 shadow"><span class="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded">Draft</span><h3 class="font-semibold mt-3">Brand Audit</h3><p class="text-sm text-gray-500 mt-1">Collect assets → Analyze consistency → Report</p><p class="text-xs text-gray-400 mt-3">Not run yet</p></div>
+            </div>
+        </div>
+
+        <!-- ─── MARKETPLACE ─── -->
+        <div id="page-marketplace" class="page hidden fade-in">
+            <h2 class="text-3xl font-bold mb-6">Marketplace</h2>
+            <div class="flex gap-3 mb-6"><button class="px-4 py-2 bg-primary-600 text-white rounded-lg">All</button><button class="px-4 py-2 bg-gray-100 dark:bg-dark-100 rounded-lg">Agents</button><button class="px-4 py-2 bg-gray-100 dark:bg-dark-100 rounded-lg">Workflows</button><button class="px-4 py-2 bg-gray-100 dark:bg-dark-100 rounded-lg">Templates</button><button class="px-4 py-2 bg-gray-100 dark:bg-dark-100 rounded-lg">Connectors</button></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="card bg-white dark:bg-dark-200 rounded-xl p-6 shadow"><span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded">Agent</span><h3 class="font-semibold mt-3">SEO Optimizer</h3><p class="text-sm text-gray-500 mt-1">Analyzes and optimizes content for search engines</p><button class="mt-3 px-3 py-1 bg-primary-600 text-white text-sm rounded">Install</button></div>
+                <div class="card bg-white dark:bg-dark-200 rounded-xl p-6 shadow"><span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded">Workflow</span><h3 class="font-semibold mt-3">Social Media Scheduler</h3><p class="text-sm text-gray-500 mt-1">Schedule and publish across social platforms</p><button class="mt-3 px-3 py-1 bg-primary-600 text-white text-sm rounded">Install</button></div>
+                <div class="card bg-white dark:bg-dark-200 rounded-xl p-6 shadow"><span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">Template</span><h3 class="font-semibold mt-3">Brand Guidelines</h3><p class="text-sm text-gray-500 mt-1">Professional brand guidelines template</p><button class="mt-3 px-3 py-1 bg-primary-600 text-white text-sm rounded">Install</button></div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script>
+function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+    const page = document.getElementById('page-' + name);
+    if (page) page.classList.remove('hidden');
+    document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+    event.target.closest('.sidebar-item')?.classList.add('active');
+}
+
+function askAI() {
+    const q = document.getElementById('ai-question').value;
+    if (!q) return;
+    document.getElementById('ai-results').classList.remove('hidden');
+    document.getElementById('ai-response-content').innerHTML = '<p class="text-primary-600">Analyzing your agency data...</p>';
+    setTimeout(() => {
+        document.getElementById('ai-response-content').innerHTML = `<p>Based on analysis of your agency data:</p><p class="mt-2">I found <strong>3 clients</strong> with elevated churn risk signals. The primary factors are payment delays and reduced engagement frequency.</p><p class="mt-2">Recommended actions: Schedule check-in calls, review recent deliverables, offer value-add services.</p>`;
+    }, 1500);
+}
+
+// Charts
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('revenueChart')) {
+        new Chart(document.getElementById('revenueChart'), {
+            type: 'line',
+            data: { labels: ['Jan','Feb','Mar','Apr','May','Jun'], datasets: [{ label: 'Revenue', data: [45000,52000,48000,61000,55000,72000], borderColor: '#3b82f6', tension: 0.4, fill: true, backgroundColor: 'rgba(59,130,246,0.1)' }] },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+    }
+    if (document.getElementById('pipelineChart')) {
+        new Chart(document.getElementById('pipelineChart'), {
+            type: 'doughnut',
+            data: { labels: ['Prospecting','Proposal','Negotiation','Won'], datasets: [{ data: [180000,95000,65000,450000], backgroundColor: ['#3b82f6','#22c55e','#f59e0b','#8b5cf6'] }] },
+            options: { responsive: true }
+        });
+    }
+});
+</script>
+</body>
+</html>

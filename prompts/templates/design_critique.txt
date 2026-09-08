@@ -1,0 +1,42 @@
+# Design Critique & Analysis
+
+Analyze the following design: {image_or_description}
+
+Analysis Framework:
+
+## 1. Visual Hierarchy
+- What draws the eye first? Why?
+- Is the hierarchy clear and intentional?
+- Rate: 1-10
+
+## 2. Color Usage
+- Color harmony and relationships
+- Contrast and readability
+- Emotional impact of color choices
+- Rate: 1-10
+
+## 3. Typography
+- Font choices and pairing
+- Readability and legibility
+- Scale and rhythm
+- Rate: 1-10
+
+## 4. Layout & Composition
+- Balance and alignment
+- Use of white space
+- Grid adherence
+- Rate: 1-10
+
+## 5. Accessibility
+- WCAG contrast compliance
+- Text size adequacy
+- Color-blind safety
+- Rate: 1-10
+
+## 6. Overall Assessment
+- Strengths (top 3)
+- Weaknesses (top 3)
+- Specific improvement suggestions
+- Overall score: 1-10
+
+Be specific, actionable, and constructive. Reference real design principles.

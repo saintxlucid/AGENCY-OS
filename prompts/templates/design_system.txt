@@ -1,0 +1,40 @@
+# UI/UX Design System
+
+Create a comprehensive design system for: {product_name}
+
+Platform: {platform} (web/mobile/desktop)
+Target Users: {users}
+Primary Goal: {goal}
+
+Components to define:
+1. **Color System**
+   - Primary, Secondary, Accent colors
+   - Semantic colors (success, warning, error, info)
+   - Neutral grayscale palette
+   - Dark mode variants
+
+2. **Typography Scale**
+   - Font family (with fallbacks)
+   - Size scale (xs, sm, md, lg, xl, 2xl, 3xl, 4xl)
+   - Line heights and letter spacing
+   - Weight usage (regular, medium, semibold, bold)
+
+3. **Spacing System**
+   - Base unit and scale (4px grid recommended)
+   - Component-level spacing patterns
+   - Layout grid specifications
+
+4. **Component Library**
+   - Buttons (primary, secondary, ghost, sizes)
+   - Input fields (text, select, checkbox, radio)
+   - Cards and containers
+   - Navigation (header, sidebar, breadcrumbs)
+   - Modals and overlays
+   - Tables and data display
+
+5. **Motion/Animation**
+   - Transition durations
+   - Easing curves
+   - Micro-interaction patterns
+
+Output as a structured design token document with CSS custom properties.

@@ -1,0 +1,57 @@
+# AGENCY OS — Docker Dockerfile
+# Multi-stage build for production deployment
+
+# ─── Stage 1: Builder ───
+FROM python:3.11-slim as builder
+
+WORKDIR /app
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir --user -r requirements.txt
+
+# ─── Stage 2: Runtime ───
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy Python packages from builder
+COPY --from=builder /root/.local /root/.local
+
+# Ensure scripts in .local are usable
+ENV PATH=/root/.local/bin:$PATH
+
+# Copy application code
+COPY aurora/ ./aurora/
+COPY .env.example ./.env
+COPY .mcp.json ./.mcp.json
+
+# Create directories
+RUN mkdir -p /app/uploads /app/output /app/tmp /app/aurora_memory /app/agency_os_data
+
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+ENV AGENCY_OS_HOME=/app
+
+# Expose API port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/api/v1/health || exit 1
+
+# Run the server
+CMD ["uvicorn", "aurora.api.server:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]

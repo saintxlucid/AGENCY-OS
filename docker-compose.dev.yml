@@ -1,0 +1,83 @@
+# AGENCY OS — Docker Compose for Local Development
+# Usage: docker-compose -f docker-compose.dev.yml up -d
+
+version: "3.8"
+
+services:
+  # ─── AGENCY OS API Server ───
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agency-os-api
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - AGENCY_OS_LOG_LEVEL=DEBUG
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=sqlite:///data/agency_os.db
+    volumes:
+      - agency_os_data:/app/agency_os_data
+      - aurora_memory:/app/aurora_memory
+      - uploads:/app/uploads
+      - output:/app/output
+      - ./:/app  # Mount source for development
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - agency-os-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ─── Redis (Cache + Queue) ───
+  redis:
+    image: redis:7-alpine
+    container_name: agency-os-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - agency-os-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ─── ChromaDB (Vector Store) ───
+  chroma:
+    image: chromadb/chroma:latest
+    container_name: agency-os-chroma
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    restart: unless-stopped
+    networks:
+      - agency-os-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  agency_os_data:
+  aurora_memory:
+  uploads:
+  output:
+  redis_data:
+  chroma_data:
+
+networks:
+  agency-os-network:
+    driver: bridge

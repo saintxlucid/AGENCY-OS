@@ -1,0 +1,19 @@
+# Brand Identity Design
+
+Design a complete brand identity for: {brand_name}
+
+Industry: {industry}
+Target Audience: {audience}
+Brand Values: {values}
+Mood/Tone: {mood}
+
+Deliverables:
+1. Logo concept description (3 variations)
+2. Primary color palette (5 colors with hex codes)
+3. Secondary color palette (3 colors with hex codes)
+4. Typography pairing (heading + body font recommendations)
+5. Brand voice description (3-5 adjectives with examples)
+6. Visual style guide (patterns, textures, imagery style)
+7. Mockup suggestions (where the brand appears)
+
+Format as a structured brand bible document.

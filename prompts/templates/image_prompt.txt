@@ -1,0 +1,22 @@
+# Image Generation Prompt Builder
+
+Subject: {subject}
+Style: {style}
+Medium: {medium}
+Lighting: {lighting}
+Color Scheme: {colors}
+Composition: {composition}
+Mood: {mood}
+Detail Level: {detail}
+Technical: {technical}
+
+---
+
+Build a detailed image generation prompt from the above parameters.
+
+Rules:
+- Combine all parameters into ONE cohesive prompt
+- Order: subject → style → medium → lighting → colors → composition → mood → technical
+- Add 2-3 quality boosters (e.g., "highly detailed", "8K", "professional photography")
+- Keep under 400 tokens for DALL-E 3
+- Output ONLY the final prompt, no explanations

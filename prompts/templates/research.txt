@@ -1,0 +1,34 @@
+# Research & Trend Analysis
+
+Topic: {topic}
+Scope: {scope}
+Timeframe: {timeframe}
+
+Research Areas:
+
+## 1. Current State of the Art
+- What are the leading approaches/methods?
+- Who are the key players?
+- What tools dominate?
+
+## 2. Emerging Trends
+- What's new in 2025-2026?
+- What's gaining traction?
+- What's declining?
+
+## 3. Best Practices
+- What do experts recommend?
+- Common pitfalls to avoid?
+- Success patterns?
+
+## 4. Tools & Resources
+- Top 5 tools (with brief comparison)
+- Learning resources
+- Community resources
+
+## 5. Future Outlook
+- Where is this heading in 1-2 years?
+- What should I prepare for?
+- What skills matter?
+
+Provide specific, actionable insights with sources where possible.

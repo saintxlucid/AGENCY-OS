@@ -1,0 +1,142 @@
+# AGENCY OS — Docker Compose
+# Full stack deployment with all services
+
+version: "3.8"
+
+services:
+  # ─── AGENCY OS API Server ───
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agency-os-api
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - AGENCY_OS_LOG_LEVEL=INFO
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://agency_os:agency_os@postgres:5432/agency_os
+      - CHROMA_URL=http://chroma:8000
+    volumes:
+      - agency_os_data:/app/agency_os_data
+      - aurora_memory:/app/aurora_memory
+      - uploads:/app/uploads
+      - output:/app/output
+    depends_on:
+      - redis
+      - postgres
+      - chroma
+    restart: unless-stopped
+    networks:
+      - agency-os-network
+
+  # ─── Redis (Cache + Queue) ───
+  redis:
+    image: redis:7-alpine
+    container_name: agency-os-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - agency-os-network
+
+  # ─── PostgreSQL (Primary Database) ───
+  postgres:
+    image: postgres:16-alpine
+    container_name: agency-os-postgres
+    environment:
+      POSTGRES_DB: agency_os
+      POSTGRES_USER: agency_os
+      POSTGRES_PASSWORD: agency_os
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - agency-os-network
+
+  # ─── ChromaDB (Vector Store) ───
+  chroma:
+    image: chromadb/chroma:latest
+    container_name: agency-os-chroma
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    restart: unless-stopped
+    networks:
+      - agency-os-network
+
+  # ─── Worker (Background Tasks) ───
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agency-os-worker
+    command: arq aurora.workers.settings.WorkerSettings
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://agency_os:agency_os@postgres:5432/agency_os
+    volumes:
+      - agency_os_data:/app/agency_os_data
+      - aurora_memory:/app/aurora_memory
+      - uploads:/app/uploads
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+    networks:
+      - agency-os-network
+
+  # ─── Prometheus (Monitoring) ───
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: agency-os-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    restart: unless-stopped
+    networks:
+      - agency-os-network
+
+  # ─── Grafana (Dashboards) ───
+  grafana:
+    image: grafana/grafana:latest
+    container_name: agency-os-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    networks:
+      - agency-os-network
+
+volumes:
+  agency_os_data:
+  aurora_memory:
+  uploads:
+  output:
+  redis_data:
+  postgres_data:
+  chroma_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  agency-os-network:
+    driver: bridge

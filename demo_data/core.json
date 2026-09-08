@@ -1,0 +1,403 @@
+{
+  "users": {
+    "7f4157d7-d7a": {
+      "user_id": "7f4157d7-d7a",
+      "email": "jane@neondesign.com",
+      "name": "Jane Creative",
+      "avatar_url": null,
+      "roles": {
+        "94625518-e48": "Role.OWNER"
+      },
+      "preferences": {
+        "_pw": "b5692500175fad6bb2b306aa20ff58423c79b130ef310fb3caa924e0f28bc61d"
+      },
+      "mfa_enabled": false,
+      "email_verified": false,
+      "last_login": null,
+      "created_at": "2026-08-09T13:29:58.635286",
+      "status": "active"
+    },
+    "5629bb1f-748": {
+      "user_id": "5629bb1f-748",
+      "email": "john@neondesign.com",
+      "name": "John Designer",
+      "avatar_url": null,
+      "roles": {
+        "94625518-e48": "Role.DESIGNER"
+      },
+      "preferences": {
+        "_pw": "b5692500175fad6bb2b306aa20ff58423c79b130ef310fb3caa924e0f28bc61d"
+      },
+      "mfa_enabled": false,
+      "email_verified": false,
+      "last_login": null,
+      "created_at": "2026-08-09T13:29:58.635286",
+      "status": "active"
+    },
+    "e4dbe5f7-dcf": {
+      "user_id": "e4dbe5f7-dcf",
+      "email": "mia@neondesign.com",
+      "name": "Mia Developer",
+      "avatar_url": null,
+      "roles": {
+        "94625518-e48": "Role.DEVELOPER"
+      },
+      "preferences": {
+        "_pw": "b5692500175fad6bb2b306aa20ff58423c79b130ef310fb3caa924e0f28bc61d"
+      },
+      "mfa_enabled": false,
+      "email_verified": false,
+      "last_login": null,
+      "created_at": "2026-08-09T13:29:58.635286",
+      "status": "active"
+    }
+  },
+  "orgs": {
+    "94625518-e48": {
+      "org_id": "94625518-e48",
+      "name": "Neon Design Co.",
+      "slug": "neon-design-co",
+      "description": "Award-winning creative agency specializing in brand identity",
+      "logo_url": null,
+      "website": null,
+      "industry": null,
+      "settings": {},
+      "billing_plan": "professional",
+      "billing_status": "active",
+      "max_projects": 50,
+      "max_storage_gb": 500,
+      "max_team_members": 50,
+      "max_workflows": 100,
+      "max_agents": 50,
+      "enabled_modules": [
+        "core",
+        "design",
+        "video",
+        "research",
+        "marketing",
+        "business",
+        "automation",
+        "developer"
+      ],
+      "member_count": 3,
+      "project_count": 3,
+      "asset_count": 0,
+      "created_at": "2026-08-09T13:29:58.635286",
+      "updated_at": "2026-08-09T13:29:58.635286"
+    }
+  },
+  "teams": {
+    "a36b341e-7f4": {
+      "team_id": "a36b341e-7f4",
+      "org_id": "94625518-e48",
+      "name": "Design Team",
+      "description": null,
+      "color": null,
+      "leader_id": "7f4157d7-d7a",
+      "member_ids": [],
+      "project_ids": [
+        "86f73f5c-a72",
+        "48a86299-b57"
+      ],
+      "created_at": "2026-08-09T13:29:58.635286"
+    },
+    "26e2af91-3c2": {
+      "team_id": "26e2af91-3c2",
+      "org_id": "94625518-e48",
+      "name": "Development Team",
+      "description": null,
+      "color": null,
+      "leader_id": "7f4157d7-d7a",
+      "member_ids": [],
+      "project_ids": [],
+      "created_at": "2026-08-09T13:29:58.635286"
+    }
+  },
+  "workspaces": {
+    "4845fb47-8d1": {
+      "workspace_id": "4845fb47-8d1",
+      "org_id": "94625518-e48",
+      "name": "Brand Studio",
+      "project_id": null,
+      "team_id": null,
+      "description": null,
+      "type": "creative",
+      "status": "active",
+      "layout": {},
+      "pinned_assets": [],
+      "default_model": "gpt-4o",
+      "auto_analyze": true,
+      "auto_tag": true,
+      "created_at": "2026-08-09T13:29:58.635286",
+      "updated_at": "2026-08-09T13:29:58.635286"
+    },
+    "a1783f4d-fbc": {
+      "workspace_id": "a1783f4d-fbc",
+      "org_id": "94625518-e48",
+      "name": "Dev Lab",
+      "project_id": null,
+      "team_id": null,
+      "description": null,
+      "type": "creative",
+      "status": "active",
+      "layout": {},
+      "pinned_assets": [],
+      "default_model": "gpt-4o",
+      "auto_analyze": true,
+      "auto_tag": true,
+      "created_at": "2026-08-09T13:29:58.635286",
+      "updated_at": "2026-08-09T13:29:58.635286"
+    }
+  },
+  "projects": {
+    "86f73f5c-a72": {
+      "project_id": "86f73f5c-a72",
+      "org_id": "94625518-e48",
+      "name": "Nike Q4 Campaign",
+      "description": "Holiday campaign for new shoe line",
+      "client_id": "30020899-db1",
+      "team_id": "a36b341e-7f4",
+      "workspace_ids": [],
+      "status": "planning",
+      "priority": "medium",
+      "progress": 0.0,
+      "start_date": null,
+      "due_date": "2026-12-15",
+      "completed_at": null,
+      "brief": "Create a holiday campaign that captures the spirit of athletic achievement",
+      "goals": [],
+      "deliverables": [],
+      "tags": [],
+      "asset_count": 0,
+      "task_count": 0,
+      "comment_count": 0,
+      "owner_id": "7f4157d7-d7a",
+      "member_ids": [
+        "7f4157d7-d7a"
+      ],
+      "created_at": "2026-08-09T13:29:58.635286",
+      "updated_at": "2026-08-09T13:29:58.635286"
+    },
+    "48a86299-b57": {
+      "project_id": "48a86299-b57",
+      "org_id": "94625518-e48",
+      "name": "Adidas Rebrand",
+      "description": "Complete visual identity overhaul",
+      "client_id": "b6c83ef5-f32",
+      "team_id": "a36b341e-7f4",
+      "workspace_ids": [],
+      "status": "planning",
+      "priority": "medium",
+      "progress": 0.0,
+      "start_date": null,
+      "due_date": "2026-11-30",
+      "completed_at": null,
+      "brief": "Refresh the brand while maintaining heritage",
+      "goals": [],
+      "deliverables": [],
+      "tags": [],
+      "asset_count": 0,
+      "task_count": 0,
+      "comment_count": 0,
+      "owner_id": "5629bb1f-748",
+      "member_ids": [
+        "5629bb1f-748"
+      ],
+      "created_at": "2026-08-09T13:29:58.635286",
+      "updated_at": "2026-08-09T13:29:58.635286"
+    },
+    "78558b11-61d": {
+      "project_id": "78558b11-61d",
+      "org_id": "94625518-e48",
+      "name": "Apple WWDC Site",
+      "description": "Microsite for developer conference",
+      "client_id": "0c910975-c71",
+      "team_id": null,
+      "workspace_ids": [],
+      "status": "planning",
+      "priority": "medium",
+      "progress": 0.0,
+      "start_date": null,
+      "due_date": "2027-06-01",
+      "completed_at": null,
+      "brief": "Design a stunning microsite for WWDC 2026",
+      "goals": [],
+      "deliverables": [],
+      "tags": [],
+      "asset_count": 0,
+      "task_count": 0,
+      "comment_count": 0,
+      "owner_id": "e4dbe5f7-dcf",
+      "member_ids": [
+        "e4dbe5f7-dcf"
+      ],
+      "created_at": "2026-08-09T13:29:58.635286",
+      "updated_at": "2026-08-09T13:29:58.635286"
+    }
+  },
+  "clients": {
+    "30020899-db1": {
+      "client_id": "30020899-db1",
+      "org_id": "94625518-e48",
+      "name": "Nike",
+      "description": "Global sportswear brand",
+      "industry": "Sports",
+      "website": null,
+      "logo_url": null,
+      "contacts": [],
+      "primary_contact_id": null,
+      "brand_guidelines": null,
+      "brand_colors": [],
+      "brand_fonts": [],
+      "brand_voice": null,
+      "target_audience": "Athletes 18-35",
+      "project_ids": [
+        "86f73f5c-a72"
+      ],
+      "total_billed": 0.0,
+      "total_projects": 1,
+      "status": "active",
+      "created_at": "2026-08-09T13:29:58.635286",
+      "updated_at": "2026-08-09T13:29:58.635286"
+    },
+    "b6c83ef5-f32": {
+      "client_id": "b6c83ef5-f32",
+      "org_id": "94625518-e48",
+      "name": "Adidas",
+      "description": "Performance sportswear",
+      "industry": "Sports",
+      "website": null,
+      "logo_url": null,
+      "contacts": [],
+      "primary_contact_id": null,
+      "brand_guidelines": null,
+      "brand_colors": [],
+      "brand_fonts": [],
+      "brand_voice": null,
+      "target_audience": "Runners 20-40",
+      "project_ids": [
+        "48a86299-b57"
+      ],
+      "total_billed": 0.0,
+      "total_projects": 1,
+      "status": "active",
+      "created_at": "2026-08-09T13:29:58.635286",
+      "updated_at": "2026-08-09T13:29:58.635286"
+    },
+    "0c910975-c71": {
+      "client_id": "0c910975-c71",
+      "org_id": "94625518-e48",
+      "name": "Apple",
+      "description": "Consumer electronics giant",
+      "industry": "Technology",
+      "website": null,
+      "logo_url": null,
+      "contacts": [],
+      "primary_contact_id": null,
+      "brand_guidelines": null,
+      "brand_colors": [],
+      "brand_fonts": [],
+      "brand_voice": null,
+      "target_audience": "Tech-savvy 25-50",
+      "project_ids": [
+        "78558b11-61d"
+      ],
+      "total_billed": 0.0,
+      "total_projects": 1,
+      "status": "active",
+      "created_at": "2026-08-09T13:29:58.635286",
+      "updated_at": "2026-08-09T13:29:58.635286"
+    }
+  },
+  "audit": [
+    {
+      "event_id": "fbe1a9eb-e23",
+      "action": "user_created",
+      "user_id": "7f4157d7-d7a",
+      "details": {
+        "email": "jane@neondesign.com"
+      },
+      "timestamp": "2026-08-09T13:29:58.635286"
+    },
+    {
+      "event_id": "4d20d9ee-dec",
+      "action": "user_created",
+      "user_id": "5629bb1f-748",
+      "details": {
+        "email": "john@neondesign.com"
+      },
+      "timestamp": "2026-08-09T13:29:58.635286"
+    },
+    {
+      "event_id": "8b9b5480-e0e",
+      "action": "user_created",
+      "user_id": "e4dbe5f7-dcf",
+      "details": {
+        "email": "mia@neondesign.com"
+      },
+      "timestamp": "2026-08-09T13:29:58.635286"
+    },
+    {
+      "event_id": "cbd5959a-c48",
+      "action": "org_created",
+      "user_id": "7f4157d7-d7a",
+      "details": {
+        "org_id": "94625518-e48",
+        "name": "Neon Design Co."
+      },
+      "timestamp": "2026-08-09T13:29:58.635286"
+    },
+    {
+      "event_id": "d711ac57-0c1",
+      "action": "member_added",
+      "user_id": "7f4157d7-d7a",
+      "details": {
+        "org_id": "94625518-e48",
+        "user_id": "5629bb1f-748",
+        "role": "designer"
+      },
+      "timestamp": "2026-08-09T13:29:58.635286"
+    },
+    {
+      "event_id": "4ba8a851-b89",
+      "action": "member_added",
+      "user_id": "7f4157d7-d7a",
+      "details": {
+        "org_id": "94625518-e48",
+        "user_id": "e4dbe5f7-dcf",
+        "role": "developer"
+      },
+      "timestamp": "2026-08-09T13:29:58.635286"
+    },
+    {
+      "event_id": "c496c303-5d2",
+      "action": "project_created",
+      "user_id": "7f4157d7-d7a",
+      "details": {
+        "project_id": "86f73f5c-a72",
+        "name": "Nike Q4 Campaign"
+      },
+      "timestamp": "2026-08-09T13:29:58.635286"
+    },
+    {
+      "event_id": "0dfd6e8f-017",
+      "action": "project_created",
+      "user_id": "5629bb1f-748",
+      "details": {
+        "project_id": "48a86299-b57",
+        "name": "Adidas Rebrand"
+      },
+      "timestamp": "2026-08-09T13:29:58.635286"
+    },
+    {
+      "event_id": "46e32e3c-64d",
+      "action": "project_created",
+      "user_id": "e4dbe5f7-dcf",
+      "details": {
+        "project_id": "78558b11-61d",
+        "name": "Apple WWDC Site"
+      },
+      "timestamp": "2026-08-09T13:29:58.635286"
+    }
+  ]
+}
