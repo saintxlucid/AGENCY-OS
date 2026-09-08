@@ -37,7 +37,14 @@
 | `OPENAI_API_KEY` | OpenAI API key | OpenAI (GPT-4o, DALL-E 3, Whisper) |
 | `OPENAI_ORG_ID` | OpenAI organization ID | OpenAI |
 | `OPENAI_PROJECT_ID` | OpenAI project ID | OpenAI |
+| `OPENAI_MODEL` | Chat default | `gpt-4o` |
+| `OPENAI_IMAGE_MODEL` | Image generation model | `dall-e-3` |
+| `OPENAI_EMBED_MODEL` | Embeddings model | `text-embedding-3-small` |
 | `ANTHROPIC_API_KEY` | Anthropic API key | Anthropic (Claude) |
+| `ANTHROPIC_MODEL` | Messages default | `claude-sonnet-4-6` |
+| `LLM_DEFAULT_PROVIDER` | `openai` \| `claude` \| `auto` | `openai` |
+| `LLM_MAX_TOKENS` | Per-call cap | `1500` |
+| `LLM_TEMPERATURE` | Sampling temperature | `0.7` |
 | `GOOGLE_API_KEY` | Google AI Studio key | Google (Gemini) |
 | `GOOGLE_GENAI_API_KEY` | Google GenAI key | Google (Gemini) |
 | `GOOGLE_GENAI_USE_VERTEXAI` | Use Vertex AI | Google |

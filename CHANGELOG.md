@@ -26,7 +26,7 @@
 - Batch 404-first (input validation precedes 503); Dockerfile never bakes .env; gitignore rooted so `aurora/memory` source tracks while data dirs stay ignored
 
 ### Verification
-- 245 passed / 73 skipped / 0 failed (`pytest tests -q --no-cov`)
+- 318 passed (+316 subtests) / 0 failed (`pytest tests/ -o addopts=""`)
 
 ---
 

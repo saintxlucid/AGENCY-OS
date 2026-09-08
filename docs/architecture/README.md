@@ -16,4 +16,4 @@ Related (non-frozen context): `overview.md`, `crp.md`, `pdftool.md`.
 
 Amendment rule: docs amended when they contradict code; code refactored when it violates contracts. Neither drifts. Parallel tracks reconcile via `reconciliation.md`, never via duplicate stores/engines/orchestrators.
 
-Checkpoints: 245 passed / 73 skipped / 0 failed (2026-09-08). Chain: Sovereign→Aurora+Identity→Decision→scopes→Approval→Execution→Operator→CRP.
+Checkpoints: 318 passed (+316 subtests) / 0 failed (2026-09-08). Chain: Sovereign→Aurora+Identity→Decision→scopes→Approval→Execution→Operator→CRP.
