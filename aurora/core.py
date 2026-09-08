@@ -161,8 +161,15 @@ class AuroraCore:
         
         print("🔧 Initializing subsystems...")
         
-        # Memory
-        self._memory = CreativeMemoryGraph()
+        # Memory — memory_dir overridable via config/env (tests use tmp_path)
+        import os as _os
+        _memory_dir = (
+            (self.config or {}).get("memory_dir")
+            or _os.getenv("ASTRA_MEMORY_DIR")
+            or _os.getenv("AURORA_MEMORY_DIR")
+            or "./aurora_memory"
+        )
+        self._memory = CreativeMemoryGraph(persist_dir=_memory_dir)
         await self._memory.initialize()
         print("  ✅ Creative Memory Graph")
         

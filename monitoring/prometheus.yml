@@ -1,0 +1,15 @@
+# ASTRA OS — Prometheus scrape config (canonical, local + compose)
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "astra-os-api"
+    static_configs:
+      - targets: ["api:8000"]
+    metrics_path: /api/v1/metrics
+    scrape_interval: 15s
+
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]

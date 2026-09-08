@@ -35,8 +35,10 @@ ENV PATH=/root/.local/bin:$PATH
 
 # Copy application code
 COPY aurora/ ./aurora/
-COPY .env.example ./.env
-COPY .mcp.json ./.mcp.json
+COPY pyproject.toml ./pyproject.toml
+COPY README.md ./README.md
+# NOTE: never bake .env into the image. Provide at runtime:
+#   docker run --env-file .env ...   OR   compose env_file
 
 # Create directories
 RUN mkdir -p /app/uploads /app/output /app/tmp /app/aurora_memory /app/agency_os_data

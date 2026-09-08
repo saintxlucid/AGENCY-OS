@@ -20,10 +20,11 @@ def event_loop():
     loop.close()
 
 @pytest.fixture
-async def aurora_core():
-    """Create AuroraCore instance for testing."""
+async def aurora_core(tmp_path):
+    """Create AuroraCore instance for testing (isolated memory)."""
     from aurora.core import AuroraCore
-    core = AuroraCore()
+    core = AuroraCore(config={"memory_dir": str(tmp_path / "aurora_memory")})
+    await core.initialize()
     yield core
     await core.shutdown()
 
@@ -77,9 +78,9 @@ class TestAuroraCore:
         assert core.observation_active is False
 
     @pytest.mark.asyncio
-    async def test_full_lifecycle(self):
+    async def test_full_lifecycle(self, tmp_path):
         from aurora.core import AuroraCore
-        core = AuroraCore()
+        core = AuroraCore(config={"memory_dir": str(tmp_path / "aurora_memory")})
         await core.initialize()
         assert core._memory is not None
         assert len(core._intelligence_engines) == 6
@@ -209,11 +210,11 @@ class TestEnterpriseCore:
 
     def test_persistence(self, enterprise_core, sample_user, sample_org):
         enterprise_core.save()
-        assert Path("./agency_os_data/core.json").exists()
+        assert (enterprise_core.persist_dir / "core.json").exists()
 
-        # Load into new instance
+        # Load into new instance (same persist_dir — isolated per test)
         from aurora.enterprise.core import EnterpriseCore
-        new_core = EnterpriseCore()
+        new_core = EnterpriseCore(persist_dir=str(enterprise_core.persist_dir))
         new_core.load()
         assert len(new_core.users) == len(enterprise_core.users)
         assert len(new_core.organizations) == len(enterprise_core.organizations)

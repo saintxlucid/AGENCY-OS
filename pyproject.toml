@@ -6,9 +6,9 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.backends._legacy:_Backend"
 
 [project]
-name = "agency-os"
+name = "astra-os"
 version = "1.0.0a1"
-description = "AI-Native Agency ERP + Creative Intelligence Platform"
+description = "ASTRA OS — AI-Native Creative Intelligence + Agency ERP (deploy-ready)"
 readme = "README.md"
 license = { text = "AGENCY OS Commercial License" }
 requires-python = ">=3.10"
@@ -30,15 +30,13 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Application Frameworks",
 ]
 
-# Core dependencies
+# Core dependencies — lean boot path (heavy ML kept optional under [local])
 dependencies = [
     "openai>=2.53.0",
     "anthropic>=0.120.2",
-    "google-adk>=2.6.2",
     "google-genai>=2.17.0",
     "mcp>=1.29.0",
     "chromadb>=1.5.9",
-    "sentence-transformers>=5.7.0",
     "networkx>=3.6",
     "pillow>=12.3.0",
     "python-dotenv>=1.2.2",
@@ -84,11 +82,9 @@ test = [
     "faker>=25.0",
 ]
 
-# Web UI
+# Web UI (Python side only — frontend lives in aurora/ui, built with npm separately)
 ui = [
-    "react>=18.0",
-    "vite>=5.0",
-    "typescript>=5.0",
+    "jinja2>=3.1.6",
 ]
 
 # DevOps
@@ -99,13 +95,15 @@ devops = [
     "grafanalib>=0.7",
 ]
 
-# Local models
+# Local models (heavy — torch/CUDA, sentence-transformers, transformers)
 local = [
     "ollama>=0.3.0",
+    "sentence-transformers>=5.7.0",
     "transformers>=5.14.1",
     "torch>=2.13.0",
     "accelerate>=0.30",
     "bitsandbytes>=0.43",
+    "google-adk>=2.6.2",
 ]
 
 # Development
@@ -119,19 +117,21 @@ dev = [
 
 # All extras combined
 all = [
-    "agency-os[api,db,test,dev]"
+    "astra-os[api,db,test,dev]"
 ]
 
 [project.scripts]
+astra-os = "aurora.cli:main"
+astra = "aurora.cli:main"
 agency-os = "aurora.cli:main"
 aos = "aurora.cli:main"
 aurora = "aurora.cli:main"
 
 [project.urls]
-Homepage = "https://agencyos.com"
-Documentation = "https://docs.agencyos.com"
-Repository = "https://github.com/agency-os/agency-os"
-Issues = "https://github.com/agency-os/agency-os/issues"
+Homepage = "https://github.com/saintxlucid/AGENCY-OS"
+Documentation = "https://github.com/saintxlucid/AGENCY-OS/tree/main/docs"
+Repository = "https://github.com/saintxlucid/AGENCY-OS"
+Issues = "https://github.com/saintxlucid/AGENCY-OS/issues"
 
 [tool.setuptools.packages.find]
 include = ["aurora*"]
