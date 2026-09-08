@@ -46,6 +46,12 @@ class NodeKind(str, Enum):
     BLOCKER = "blocker"
     REQUEST = "request"
     MEETING = "meeting"
+    # Full-service extension (v1.1 additive — existing nodes untouched)
+    LEAD = "lead"
+    PITCH = "pitch"
+    LAUNCH = "launch"
+    DISTRIBUTION = "distribution"
+    RETAINER = "retainer"
 
 
 STATES: Dict[str, List[str]] = {
@@ -61,6 +67,13 @@ STATES: Dict[str, List[str]] = {
     "performance": ["collecting", "reported", "learned_from"],
     "learning": ["draft", "validated", "embedded"],
     "task": ["todo", "doing", "blocked", "done"],
+    # Full-service extension states (additive)
+    "lead": ["new", "qualified", "pitched", "won", "lost"],
+    "pitch": ["draft", "submitted", "won", "lost"],
+    "scope": ["draft", "proposed", "approved", "changed"],
+    "launch": ["planned", "released", "rolled_back"],
+    "distribution": ["planned", "live", "paused", "ended"],
+    "retainer": ["draft", "active", "renewed", "churned"],
 }
 
 # Legal transitions (from → to). Anything else = rejected with code.
@@ -81,6 +94,18 @@ TRANSITIONS: Dict[str, List[tuple]] = {
     "learning": [("draft", "validated"), ("validated", "embedded")],
     "task": [("todo", "doing"), ("doing", "blocked"), ("blocked", "doing"),
              ("doing", "done"), ("todo", "done")],
+    # Full-service extension transitions (additive)
+    "lead": [("new", "qualified"), ("qualified", "pitched"),
+               ("pitched", "won"), ("pitched", "lost"),
+               ("qualified", "lost"), ("new", "lost")],
+    "pitch": [("draft", "submitted"), ("submitted", "won"), ("submitted", "lost")],
+    "scope": [("draft", "proposed"), ("proposed", "approved"),
+                ("approved", "changed"), ("changed", "approved")],
+    "launch": [("planned", "released"), ("released", "rolled_back")],
+    "distribution": [("planned", "live"), ("live", "paused"),
+                       ("paused", "live"), ("live", "ended"), ("paused", "ended")],
+    "retainer": [("draft", "active"), ("active", "renewed"),
+                   ("renewed", "active"), ("active", "churned")],
 }
 
 
@@ -111,6 +136,12 @@ class EdgeKind(str, Enum):
     TRIGGERS = "triggers"
     CONTAINS = "contains"
     REFERENCES = "references"
+    # Full-service extension edges (additive)
+    CONVERTS_TO = "converts_to"
+    SCOPES = "scopes"
+    ESTABLISHES = "establishes"
+    DISTRIBUTES_VIA = "distributes_via"
+    RETAINS = "retains"
 
 
 @dataclass

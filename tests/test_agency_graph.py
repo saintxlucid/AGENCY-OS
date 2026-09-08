@@ -48,3 +48,21 @@ def test_chain_shape():
     # Spine must be expressible: client -owns-> brand -has-> campaign -issues-> brief
     kinds = [NodeKind.CLIENT.value, NodeKind.BRAND.value, NodeKind.CAMPAIGN.value, NodeKind.BRIEF.value]
     assert kinds == ["client", "brand", "campaign", "brief"]
+
+
+def test_full_service_extension_additive():
+    # New nodes validate; old transitions untouched (backward compatible).
+    lead = AgencyNode(id=new_id("lead"), kind="lead", org_id="o", state="qualified",
+                      owner_role="New Business")
+    assert lead.validate() == []
+    assert can_transition("lead", "qualified", "pitched")
+    assert not can_transition("lead", "new", "won")
+    assert can_transition("scope", "approved", "changed")
+    assert can_transition("distribution", "live", "paused")
+    assert can_transition("retainer", "active", "renewed")
+    assert can_transition("launch", "planned", "released")
+    # Old spine still enforced
+    assert can_transition("brief", "submitted", "approved")
+    assert not can_transition("asset", "wip", "approved")
+    e = AgencyEdge(source_id="a", target_id="b", kind="converts_to")
+    assert e.validate() == []
