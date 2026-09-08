@@ -32,6 +32,7 @@
 - Commercial chain: Pitch / Scope(SOW) / ChangeOrder / Retainer with parent linkage, no orphans (`aurora/enterprise/erp.py §1b` + `erp_bindings` adapters)
 - Gates: scope-change requires numbered ChangeOrder + delta approval; launch re-verifies QC + exact version + receipt path
 - Intelligence findings v1 mapped (`agency-intelligence-model.md` + research classifications)
+- Operating Model layer (`agency-operating-model.md`): grammar, per-type state machines, rituals, meeting OS, causal/decision/disagreement/assumption/experiment stores, creative/client/stakeholder memory, health/pulse/weather, nervous-system events, attention/focus, handoff protocol, agent perf, model router, AI COGS, profit forecast, promises, contracts, rights, brand constitution, culture, pitch cells, capacity/chemistry, case/portfolio mining, benchmarks, root cause, process mining, autopilot, judgment points, confidence, contradiction, decay, truth states, search, twins, academy, playbooks, simulation, timeline — with PHASE 0 repo classifications
 
 ---
 

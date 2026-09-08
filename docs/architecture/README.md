@@ -13,6 +13,7 @@ Read order for new engineers:
 10. `implementation-plan.md` — reuse map + 5 phases + acceptance + out-of-scope.
 11. `agency-intelligence-model.md` — full-service findings v1 (people→capabilities with mapping targets).
 12. `agency-intelligence-research.md` — Enterprise OS research + PHASE 0 classifications.
+13. `agency-operating-model.md` — Operating Model layer (grammar, state machines, rituals, meeting OS, why/decision/disagreement/assumption/experiment, memories, health/pulse/weather, attention/focus, handoff, agent perf, router, COGS, forecast, promises, contracts, rights, brand, culture, pitch, capacity, mining, loops, simulation, timeline).
 
 Related (non-frozen context): `overview.md`, `crp.md`, `pdftool.md`.
 
