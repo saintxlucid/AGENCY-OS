@@ -351,7 +351,28 @@ class MCPLayer:
             return response.json()
     
     # ─── Tool Registry for Aurora ───
-    
+
+    def register_local_tool(self, name: str, fn: Callable, description: str = ""):
+        """Register an in-process tool (LLM handlers, studio tools)."""
+        self.tool_registry[name] = fn
+        # Mirror into a synthetic `local` server so get_available_tools() sees it
+        server = self.servers.get("local")
+        if server is None:
+            server = MCPServer(server_id="local", name="local", transport="local", status="connected")
+            self.servers["local"] = server
+        if not any(t.get("name") == name for t in server.tools):
+            server.tools.append({"name": name, "description": description or name})
+
+    def register_llm_tools(self) -> int:
+        """Expose canonical LLM tools (Claude + OpenAI) as local MCP tools."""
+        from aurora.llm.tools import HANDLERS, TOOL_SPECS
+
+        for spec in TOOL_SPECS:
+            handler = HANDLERS.get(spec.name)
+            if handler is not None:
+                self.register_local_tool(spec.name, handler, spec.description)
+        return len(TOOL_SPECS)
+
     def get_available_tools(self) -> List[Dict]:
         """Get all available tools from connected servers."""
         tools = []

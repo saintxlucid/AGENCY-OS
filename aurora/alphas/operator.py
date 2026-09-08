@@ -42,11 +42,27 @@ class Blocker:
 
 
 class Operator:
-    def __init__(self, sovereign: Sovereign | None = None):
+    def __init__(self, sovereign: Sovereign | None = None, runtime: Any | None = None):
         self.sovereign = sovereign or Sovereign()
+        self._runtime = runtime
+        self._bootstrapped_orgs: set = set()
         self.receipts: List[ExecutionReceipt] = []
         self.blockers: List[Blocker] = []
         self._n = 0
+
+    def _get_runtime(self, org_id: str = "org_saintlucid"):
+        """Shared CRPRuntime, bootstrapped once per org. Single execution path."""
+        if self._runtime is None:
+            from aurora.enterprise.runtime import CRPRuntime
+
+            self._runtime = CRPRuntime(strict_mode=False)
+        if org_id not in self._bootstrapped_orgs:
+            try:
+                self._runtime.bootstrap(org_id)
+            except Exception:
+                pass
+            self._bootstrapped_orgs.add(org_id)
+        return self._runtime
 
     def build_plan(self, goal: str, steps: List[PlanStep]) -> Dict[str, Any]:
         if len(steps) > 16:
@@ -65,7 +81,18 @@ class Operator:
         executor: Callable[[], str] | None = None,
         is_human: bool = False,
         amount_usd: float = 0.0,
+        org_id: str = "org_saintlucid",
+        actor_id: str = "operator",
+        actor_role: str = "Operator",
+        object_id: str | None = None,
+        external_facing: bool = False,
     ) -> ExecutionReceipt:
+        # Gate 0 (single path): CRP preflight first. Operator never duplicates policy logic.
+        crp = self.preflight_via_crp(action, org_id=org_id, actor_id=actor_id, actor_role=actor_role, object_id=object_id, estimated_cost_usd=amount_usd, external_facing=external_facing)
+        if not crp.get("allowed"):
+            state = crp.get("state", "denied")
+            code = {"awaiting_approval": "need_approval", "denied": "deny_policy", "budget_blocked": "budget_exceeded"}.get(state, state)
+            return self._blocked(action_id, action, code, crp.get("error") or f"crp preflight {state} via {crp.get('via')}")
         # Pre-flight 1: evidence for proposals that mutate on basis of intel
         if action.startswith("intel.") and not evidence_ids:
             return self._blocked(action_id, "proposal", "missing_evidence",
@@ -118,13 +145,9 @@ class Operator:
         Builds Intent, calls CRP, translates Result.state to PreflightResult codes.
         Falls back to local Sovereign on import/runtime failure (logged in detail)."""
         try:
-            from aurora.enterprise.runtime import ActorType, CRPRuntime, Intent
+            from aurora.enterprise.runtime import ActorType, Intent
 
-            rt = CRPRuntime(strict_mode=False)
-            try:
-                rt.bootstrap(org_id)
-            except Exception:
-                pass
+            rt = self._get_runtime(org_id)
             intent = Intent(org_id=org_id, action=action, actor_id=actor_id,
                             actor_type=ActorType.AGENT, actor_role=actor_role,
                             object_id=object_id, estimated_cost_usd=estimated_cost_usd,

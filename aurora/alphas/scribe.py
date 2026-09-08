@@ -68,3 +68,20 @@ class Scribe:
         )
         self.proposals.append(p)
         return p
+
+    def propose_learning(self, campaign_id: str, finding: str, rationale: str,
+                         confidence: float, performance_evidence_id: str,
+                         approval_evidence_id: str, known_evidence: List[str],
+                         alternatives: List[Dict[str, str]] | None = None) -> SynthesisProposal:
+        """Learning gate: performance + approval evidence required (invariant)."""
+        evs = [performance_evidence_id, approval_evidence_id]
+        if not performance_evidence_id or not approval_evidence_id:
+            raise ValueError("learning requires performance_evidence_id + approval_evidence_id")
+        return self.propose(campaign_id, finding, rationale, confidence, evs, known_evidence, alternatives)
+
+    @staticmethod
+    def gate_doc_cites(cites: List[str], known_evidence: List[str]) -> None:
+        """Doc-path binding: call before surfacing any synthesis/doc to humans."""
+        missing = [c for c in cites if c not in known_evidence]
+        if missing:
+            raise ValueError(f"doc blocked: unresolvable cites {missing}")

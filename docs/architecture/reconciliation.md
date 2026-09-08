@@ -49,8 +49,8 @@ Date: 2026-09-08. Method: file:line evidence. Rule: wrap > refactor > deprecate.
 - Docs amended when they contradict code. Code refactored when it violates contracts. Neither drifts.
 
 ## Immediate TODOs (ordered)
-1. Bind Operator→CRP preflight (import + delegate, remove duplicate spend logic on conflict).
-2. Bind Sentinel→LiveObserver subscription + Scribe citation into doc paths.
-3. Sovereign middleware list for API mutating routes (explicit route:permission map).
-4. ERP STATES/TRANSITIONS binding (Task/Campaign/Invoice status ↔ schema).
-5. Amend six frozen docs with substrate pointers (this file is the index).
+1. [DONE] Bind Operator→CRP preflight — `aurora/alphas/operator.py:_get_runtime/execute_step Gate 0/preflight_via_crp` (shared runtime, single path; Sovereign version-pin retained for asset.publish).
+2. [DONE] Bind Sentinel→LiveObserver subscription (`aurora/observation/watcher.py:subscribe_sentinel/_sentinel_sinks` fan-out; `Sentinel.ingest_event` owns hash/log/stage) + Scribe citation gates (`Scribe.propose_learning`, `gate_doc_cites`).
+3. [DONE] Sovereign middleware for API mutating routes — `aurora/agency/api_guard.py:SOVEREIGN_ROUTE_MAP/action_for/guard_or_403` + `sovereign_gate` http middleware in `aurora/api/server.py` (reads open per RBAC, deny → 403 JSON).
+4. [DONE] ERP STATES/TRANSITIONS binding — `aurora/agency/erp_bindings.py` (task/campaign/invoice adapters; `transition_erp_task`); enforced in API (`PATCH /api/v1/erp/tasks/{id}/state`, invoice linkage 422 on orphans).
+5. [IN PROGRESS] Amend six frozen docs with substrate pointers (this file is the index).

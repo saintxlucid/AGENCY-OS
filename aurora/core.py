@@ -128,6 +128,7 @@ class AuroraCore:
         self._observation = None
         self._protocol_layer = None
         self._integrations: Dict[str, Any] = {}
+        self._llm = None
         
         # Active state
         self.current_project: Optional[ProjectContext] = None
@@ -193,7 +194,27 @@ class AuroraCore:
         self._protocol_layer = MCPLayer(self)
         await self._protocol_layer.initialize()
         print("  ✅ MCP/A2A Protocol Layer")
-        
+
+        # Unified LLM layer (Claude SDK + OpenAI SDK/ADK) — never fatal if keys missing
+        try:
+            from aurora.integrations.llm import ClaudeIntegration, OpenAIIntegration
+            from aurora.llm.config import load_llm_config
+
+            self._llm = load_llm_config({k: v for k, v in (self.config or {}).items() if k in ("default_provider", "openai_api_key", "openai_model", "anthropic_api_key", "anthropic_model")})
+            claude = ClaudeIntegration()
+            openai_integ = OpenAIIntegration()
+            await claude.connect()
+            await openai_integ.connect()
+            self._integrations["claude"] = claude
+            self._integrations["openai"] = openai_integ
+            try:
+                self._protocol_layer.register_llm_tools()
+            except Exception:
+                pass
+            print(f"  ✅ LLM SDKs (providers: {self._llm.providers() or ['none — set API keys']})")
+        except Exception as e:
+            print(f"  ⚠️  LLM SDKs: {e}")
+
         print("\n🌅 AURORA fully initialized and ready.\n")
     
     # ─── Core Operations ───
@@ -373,6 +394,22 @@ class AuroraCore:
         """Register an external tool integration."""
         self._integrations[name] = integration
         print(f"🔗 Integration registered: {name}")
+
+    # ─── Unified LLM (Claude + OpenAI/ADK) ───
+
+    async def chat(self, prompt: str, system: str | None = None, provider: str = "auto", **kw) -> str:
+        """Provider-agnostic chat (auto picks default → fallback)."""
+        from aurora.llm.factory import chat_auto
+
+        return await chat_auto(prompt, system=system, provider=provider, **kw)
+
+    async def run_agent(self, task: str, agent: str = "design_studio", provider: str = "auto", session_context: Dict | None = None) -> str:
+        """Run a built-in agent via OpenAI Agents SDK or Claude tool-loop."""
+        from aurora.agents.studio import run_critique, run_research, run_studio
+
+        runners = {"design_studio": run_studio, "researcher": run_research, "critic": run_critique}
+        result = await runners.get(agent, run_studio)(task, provider=provider, session_context=session_context)
+        return result.output
     
     # ─── Helpers ───
     
@@ -455,6 +492,11 @@ class AuroraCore:
     
     def status(self) -> Dict:
         """Get system status."""
+        llm = None
+        try:
+            llm = self._llm.status() if self._llm else None
+        except Exception:
+            pass
         return {
             "session_id": self.session_id,
             "started_at": self.started_at,
@@ -463,6 +505,7 @@ class AuroraCore:
             "memory_stats": self._memory.stats() if self._memory else {},
             "integrations": list(self._integrations.keys()),
             "intelligence_engines": [d.value for d in self._intelligence_engines.keys()],
+            "llm": llm,
         }
     
     async def shutdown(self):

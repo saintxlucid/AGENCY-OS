@@ -7,6 +7,7 @@ from __future__ import annotations
 import os
 import asyncio
 import hashlib
+import inspect
 import time
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Callable, Set
@@ -89,6 +90,7 @@ class LiveObserver:
         self._watch_task: Optional[asyncio.Task] = None
         self._debounce: Dict[str, float] = {}
         self.debounce_interval = 2.0  # seconds
+        self._sentinel_sinks: List[Callable] = []  # PHASE 1 seam 4: Sentinel subscriptions
     
     async def start(self, targets: List[str], interval: float = 5.0):
         """Start observing targets."""
@@ -223,7 +225,17 @@ class LiveObserver:
             )
             
             self.events.append(event)
-            
+
+            # PHASE 1 seam 4: fan out to Sentinel subscribers (subscription, not polling).
+            # Sentinel owns hashing/log/staging; failures here never break observation.
+            for sink in list(self._sentinel_sinks):
+                try:
+                    out = sink(event)
+                    if inspect.isawaitable(out):
+                        await out
+                except Exception as e:
+                    print(f"  ⚠️  sentinel sink error: {e}")
+
             # Print summary
             print(f"  📝 Live critique for {Path(file_path).name}:")
             for insight in (critiques + improvements)[:3]:
@@ -273,3 +285,17 @@ class LiveObserver:
         """Set callback for target events."""
         if target_id in self.targets:
             self.targets[target_id].callback = callback
+
+    # ─── PHASE 1 seam 4: Sentinel subscription ───
+
+    def subscribe_sentinel(self, sentinel: Any) -> Callable:
+        """Subscribe a Sentinel (or any sink with ingest_event). Returns unsub fn."""
+        fn = getattr(sentinel, "ingest_event", None)
+        sink = fn if callable(fn) else sentinel  # allow raw callable(event)
+        self._sentinel_sinks.append(sink)
+        def _unsub():
+            try:
+                self._sentinel_sinks.remove(sink)
+            except ValueError:
+                pass
+        return _unsub

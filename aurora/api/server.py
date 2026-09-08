@@ -221,6 +221,34 @@ def create_app() -> FastAPI:
                 content={"error": str(e), "request_id": str(uuid.uuid4())[:12]}
             )
 
+    # ─── Sovereign gate (PHASE 1 seam: mutating routes fail closed) ───
+    # Reads stay open per RBAC. Deny → 403 JSON (returned, not raised:
+    # raises inside http middleware bypass ExceptionMiddleware → 500).
+    @app.middleware("http")
+    async def sovereign_gate(request: Request, call_next):
+        try:
+            from aurora.agency.api_guard import action_for, guard_or_403
+        except Exception:
+            return await call_next(request)
+        action = action_for(request.method, request.url.path)
+        if action is None:
+            return await call_next(request)
+        is_human = request.headers.get("X-Human") == "true"
+        approval = None
+        decision = request.headers.get("X-Approval-Decision")
+        if decision:
+            approval = {"decision": decision, "expires_at": request.headers.get("X-Approval-Expires", "")}
+        try:
+            amount = float(request.headers.get("X-Amount-USD", "0") or 0)
+        except ValueError:
+            amount = 0.0
+        try:
+            guard_or_403(action, is_human=is_human, approval=approval, amount_usd=amount)
+        except Exception as e:
+            detail = getattr(e, "detail", None) or {"sovereign": "deny", "reason": str(e)}
+            return JSONResponse(status_code=403, content={"detail": detail, "action": action})
+        return await call_next(request)
+
     # ─── WebSocket Manager ───
 
     class ConnectionManager:
@@ -475,6 +503,14 @@ def create_app() -> FastAPI:
 
         from aurora.enterprise.erp import Invoice, InvoiceStatus, Currency
 
+        total = sum(i.get("quantity", 1) * i.get("rate", 0) for i in invoice.items) * (1 + invoice.tax)
+        from aurora.agency.erp_bindings import assert_invoice_linkage
+
+        try:
+            assert_invoice_linkage(invoice.client_id, total)
+        except ValueError as e:
+            raise HTTPException(422, str(e))
+
         inv = Invoice(
             invoice_id=f"inv_{uuid.uuid4().hex[:10]}",
             org_id="org_default",
@@ -482,7 +518,7 @@ def create_app() -> FastAPI:
             number=f"INV-{len(state.erp_core.invoices)+1:04d}",
             items=invoice.items,
             tax=invoice.tax,
-            total=sum(i.get("quantity", 1) * i.get("rate", 0) for i in invoice.items) * (1 + invoice.tax),
+            total=total,
             due_date=invoice.due_date,
             notes=invoice.notes,
             status=InvoiceStatus.DRAFT,
@@ -544,6 +580,27 @@ def create_app() -> FastAPI:
         )
         state.erp_core.tasks[t.task_id] = t
         return {"task_id": t.task_id, "title": t.title, "status": t.status.value}
+
+    @app.patch("/api/v1/erp/tasks/{task_id}/state", tags=["ERP"])
+    async def transition_task_state(task_id: str, to_status: str):
+        """Governed task transition (canonical TRANSITIONS via erp_bindings)."""
+        if not state.erp_core:
+            raise HTTPException(503, "ERP not initialized")
+        if task_id not in state.erp_core.tasks:
+            raise HTTPException(404, "Task not found")
+        from aurora.agency.erp_bindings import transition_erp_task
+        from aurora.enterprise.erp import TaskStatus
+
+        try:
+            target = TaskStatus(to_status)
+        except ValueError:
+            raise HTTPException(422, f"unknown task status {to_status}")
+        t = state.erp_core.tasks[task_id]
+        try:
+            frm, to = transition_erp_task(t, target)
+        except ValueError as e:
+            raise HTTPException(422, str(e))
+        return {"task_id": task_id, "from_agency": frm, "to_agency": to, "status": t.status.value}
 
     # ─── ERP: CRM ───
 
