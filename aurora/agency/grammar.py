@@ -14,7 +14,7 @@ PATTERNS: List[Tuple[str, str, str]] = [
     (r"debrief", "work.debrief", "campaign"),
     (r"status", "work.status", "campaign"),
     (r"waiting on .*feedback", "approval.awaiting", "asset"),
-    (r"not in scope|out of scope", "scope.check", "scope"),
+    (r"n.?t in scope|out of scope|beyond scope", "scope.check", "scope"),
     (r"another route|other route", "concept.variant", "concept"),
     (r"another round|one more round", "asset.revise", "asset"),
     (r"is .* approved", "approval.check", "asset"),
