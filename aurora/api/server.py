@@ -631,12 +631,14 @@ def create_app() -> FastAPI:
         improve: bool = False
     ):
         """Batch process a directory of media files."""
-        if not state.aurora:
-            raise HTTPException(503, "AuroraCore not initialized")
-
+        # Input validation first (404 precedes 503): bad path is client error
+        # even when the service is down. Layer contract: fail-fast on inputs.
         path = Path(directory)
         if not path.exists():
             raise HTTPException(404, "Directory not found")
+
+        if not state.aurora:
+            raise HTTPException(503, "AuroraCore not initialized")
 
         ext_list = [e.strip() for e in extensions.split(",")]
         files = []
