@@ -69,3 +69,20 @@ class Sentinel:
     def gaps(self, expected_subjects: List[str]) -> List[str]:
         seen = {o.subject_id for o in self.observation_log}
         return [s for s in expected_subjects if s not in seen]
+
+    def ingest_event(self, event: Any, stage: bool = True) -> ObservationRecord:
+        """Binding: LiveObserver.ObservationEvent → Sentinel record (PHASE 1 seam 4).
+
+        Subscription, not duplicate polling. Caller (LiveObserver callback or
+        _handle_file_change wrapper) passes the event through; Sentinel owns
+        hashing + log + optional evidence staging. No business mutation."""
+        target = getattr(event, "target_id", "") or ""
+        subject = getattr(event, "file_path", "") or target or "unknown"
+        kind = getattr(event, "event_type", "observed") or "observed"
+        rec = self.observe(subject_id=str(subject), kind=str(kind),
+                           before={}, after={"event_id": getattr(event, "event_id", "")},
+                           source=f"live_observer:{target}")
+        if stage:
+            self.stage_evidence(rec.subject_id, f"live-observer:{kind}",
+                                recency="fresh", corroboration=1)
+        return rec

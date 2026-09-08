@@ -106,3 +106,38 @@ class Operator:
         self.blockers.append(Blocker(blocker_id=f"ag_blk_{self._n:04d}",
                                      subject_id=subject, reason=reason, code=code))
         return rc
+
+    def preflight_via_crp(self, action: str, org_id: str = "org_saintlucid",
+                          actor_id: str = "operator", actor_role: str = "Operator",
+                          object_id: str | None = None,
+                          estimated_cost_usd: float = 0.0,
+                          external_facing: bool = False) -> Dict[str, Any]:
+        """Binding: Operator plans → CRPRuntime.preflight (PHASE 1 seam 3).
+
+        Single execution path: Operator never duplicates preflight logic.
+        Builds Intent, calls CRP, translates Result.state to PreflightResult codes.
+        Falls back to local Sovereign on import/runtime failure (logged in detail)."""
+        try:
+            from aurora.enterprise.runtime import ActorType, CRPRuntime, Intent
+
+            rt = CRPRuntime(strict_mode=False)
+            try:
+                rt.bootstrap(org_id)
+            except Exception:
+                pass
+            intent = Intent(org_id=org_id, action=action, actor_id=actor_id,
+                            actor_type=ActorType.AGENT, actor_role=actor_role,
+                            object_id=object_id, estimated_cost_usd=estimated_cost_usd,
+                            external_facing=external_facing)
+            res = rt.preflight(intent)
+            state = getattr(res.state, "value", str(res.state))
+            return {"via": "crp", "state": state,
+                    "allowed": state in ("allowed",),
+                    "needs_approval": state in ("awaiting_approval",),
+                    "error": getattr(res, "error", "") or ""}
+        except Exception as e:
+            r = self.sovereign.check(action, actor_role=actor_role,
+                                     approval=None, amount_usd=estimated_cost_usd)
+            return {"via": "sovereign-fallback", "state": r.code,
+                    "allowed": r.allowed, "needs_approval": r.code == "need_approval",
+                    "error": f"crp-unavailable: {e}"}
