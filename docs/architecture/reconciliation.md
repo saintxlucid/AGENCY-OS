@@ -53,4 +53,9 @@ Date: 2026-09-08. Method: file:line evidence. Rule: wrap > refactor > deprecate.
 2. [DONE] Bind Sentinel→LiveObserver subscription (`aurora/observation/watcher.py:subscribe_sentinel/_sentinel_sinks` fan-out; `Sentinel.ingest_event` owns hash/log/stage) + Scribe citation gates (`Scribe.propose_learning`, `gate_doc_cites`).
 3. [DONE] Sovereign middleware for API mutating routes — `aurora/agency/api_guard.py:SOVEREIGN_ROUTE_MAP/action_for/guard_or_403` + `sovereign_gate` http middleware in `aurora/api/server.py` (reads open per RBAC, deny → 403 JSON).
 4. [DONE] ERP STATES/TRANSITIONS binding — `aurora/agency/erp_bindings.py` (task/campaign/invoice adapters; `transition_erp_task`); enforced in API (`PATCH /api/v1/erp/tasks/{id}/state`, invoice linkage 422 on orphans).
-5. [IN PROGRESS] Amend six frozen docs with substrate pointers (this file is the index).
+5. [DONE] Amend frozen docs with substrate pointers (this file is the index) + `docs/architecture/authority-v1.md` (Authority Model v1: RBAC→ABAC→capability→approval→Sovereign→audit; `aurora/access/` canonical, `aurora/agency/access.py` shim).
+
+## Documentation checkpoint (2026-09-08)
+- Index: `docs/architecture/README.md` (read order; authority-model-v1 = design spec, authority-v1 = implementation record).
+- Release notes: `CHANGELOG.md [Unreleased]` (added/fixed/verification: 245 passed / 73 skipped / 0 failed).
+- Personal files never committed: `.mcp.json`, `ASTRA.md`, `SOUL.md`, `IDENTITY.md`, `USER.md`, `HEARTBEAT.md`, `Scripts/`, `Skills/`, `Tools/`, `Templates/`, `TOOLS.md`, media/data dirs (gitignore rooted).

@@ -86,22 +86,50 @@ class Sovereign:
         purpose: str = "",
         purpose_mismatch: bool = False,
         rbac_allowed: Any = None,
+        zone: str = "",
+        capability: Any = None,
+        delegation: Any = None,
+        break_glass: Any = None,
+        agent_chain: Any = None,
     ) -> PreflightResult:
-        # ABAC pre-check (access fabric) before policy evaluation. Sovereign adjudicates final.
+        # Fabric pre-check (access fabric v2) before policy evaluation. Sovereign adjudicates final.
         # RBAC is one input: explicit False denies immediately; True/None continues.
         if rbac_allowed is False:
             return PreflightResult(False, "deny_permission",
                                    "RBAC denies baseline permission", "")
         if access_profile is not None:
             try:
-                from aurora.agency.access import decide as _abac
+                from aurora.access import pre_check as _fabric
             except Exception as e:
                 return PreflightResult(False, "deny_permission",
                                        f"access fabric unavailable: {e}", "")
+            # Accept AccessProfile object or plain dict (backwards compatible).
+            if hasattr(access_profile, "principal") and hasattr(access_profile, "profile"):
+                prof_d = {
+                    "principal": getattr(access_profile, "principal", "human"),
+                    "profile": getattr(access_profile, "profile", "viewer"),
+                    "department": getattr(access_profile, "department", ""),
+                    "resource_scope": list(getattr(access_profile, "resource_scope", []) or []),
+                    "actions": list(getattr(access_profile, "actions", []) or []),
+                    "approval_authority": list(getattr(access_profile, "approval_authority", []) or []),
+                    "data_classification": list(getattr(access_profile, "data_classification", []) or []),
+                    "organization": getattr(access_profile, "organization", "") or "",
+                    "zones": list(getattr(access_profile, "zones", []) or []),
+                    "expires_at": getattr(access_profile, "expires_at", "") or "",
+                    "database_direct_access": bool(getattr(access_profile, "database_direct_access", False)),
+                }
+            else:
+                prof_d = dict(access_profile)
             verb = action.split(".")[-1] if "." in action else action
-            d = _abac(access_profile, verb, classification or "INTERNAL",
-                      purpose=purpose,
-                      is_sensitive_purpose_mismatch=purpose_mismatch)
+            d = _fabric(prof_d, verb, classification or "INTERNAL",
+                        purpose=purpose, zone=zone, capability=capability,
+                        delegation=delegation, break_glass=break_glass,
+                        agent_chain=agent_chain)
+            # Legacy purpose-mismatch flag (pre-v2 callers): explicit True denies
+            # sensitive access even if the purpose registry has no opinion.
+            if purpose_mismatch and (classification or "") not in ("PUBLIC", "INTERNAL"):
+                return PreflightResult(False, "deny_purpose",
+                                       f"purpose '{purpose}' does not justify {classification or 'INTERNAL'}", "")
             if not d.get("allowed"):
                 return PreflightResult(False, str(d.get("code", "deny_permission")),
                                        str(d.get("detail", "")), "")

@@ -4,6 +4,32 @@
 
 ---
 
+## [Unreleased] — canonical control plane (2026-09-08)
+
+### Added
+- Frozen architecture: north star C, agency graph v1, layer contracts, Sovereign v1, builtin agents (AURORA→ALPHAs→Pantheon→Tools), proving slice, implementation plan (`docs/architecture/`)
+- PHASE 0 reconciliation: substrate→canonical map with seams (wrap > refactor > deprecate)
+- Agency schema kernel: typed nodes/edges/states/TRANSITIONS, message envelopes (`aurora/agency/`)
+- Sovereign pack + ABAC/RBAC binding: fail-closed gates, version pin, spend thresholds (`aurora/agency/sovereign.py`, `aurora/api/sovereign_map.py`, `aurora/agency/api_guard.py` middleware)
+- ERP↔graph bindings: task transition adapter, invoice linkage (`aurora/agency/erp_bindings.py`)
+- Authority Model v1: 9 profiles, 14 verbs, 6 classifications, Z0-Z6, delegation/break-glass, purpose limits, agent identity chain, capability tokens (`aurora/access/`, `aurora/agency/access.py` shim)
+- ALPHA control plane: Sentinel/Scribe/Operator services (`aurora/alphas/`)
+- Pantheon supervised labor: 6 intel workers + Account/Delivery/Performance over ERP/AI-ERP (`aurora/pantheon/`)
+- Proving slice harness + API read helpers (`demos/proving_slice.py`, `aurora/api/pantheon.py`)
+- Deploy-ready: `.env.example`, `.dockerignore`, canonical compose + observability overlay, `monitoring/prometheus.yml`, workers stub, CI workflow
+- LLM SDK layer (unified Claude/OpenAI/ADK config, tools, shadow guard) + hermetic tests
+
+### Fixed
+- Lean boot: heavy torch/transformers lazy with hash fallback; lean core deps, ML under `[local]`
+- Test isolation: tmp memory dirs, persistence uses fixture dirs, hermetic LLM config, RetryError acceptance
+- ERP contract alignment: opp_id/task_id/asset_id, lead link, ProjectContext.status
+- Batch 404-first (input validation precedes 503); Dockerfile never bakes .env; gitignore rooted so `aurora/memory` source tracks while data dirs stay ignored
+
+### Verification
+- 245 passed / 73 skipped / 0 failed (`pytest tests -q --no-cov`)
+
+---
+
 ## [1.0.0-alpha] — 2026-08-07
 
 ### Added

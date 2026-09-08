@@ -147,6 +147,28 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         print(f"  ⚠️  EnterpriseCore: {e}")
 
+    # Access Fabric → Enterprise audit (WHO/WHAT/WHEN/WHERE/WHY/RESULT/POLICY).
+    # Hook failures never break boot; fabric still denies fail-closed.
+    try:
+        from aurora.access import on_access_event as _on_access
+
+        def _forward_access(event):
+            try:
+                if state.enterprise_core is not None:
+                    ctx = event.get("ctx", {}) or {}
+                    state.enterprise_core._audit("access.decision", ctx.get("actor_id"), {
+                        "result": event.get("result"), "stage": event.get("stage"),
+                        "code": event.get("code"), "action": event.get("action"),
+                        "purpose": ctx.get("purpose", ""), "zone": ctx.get("zone", ""),
+                    })
+            except Exception:
+                pass
+
+        _on_access(_forward_access)
+        print("  ✅ Access Fabric audit hook")
+    except Exception as e:
+        print(f"  ⚠️  Access audit hook: {e}")
+
     try:
         from aurora.enterprise.erp import ERPCore
         state.erp_core = ERPCore()
@@ -792,6 +814,45 @@ def create_app() -> FastAPI:
             raise HTTPException(503, "Enterprise not initialized")
         return [{"id": o.org_id, "name": o.name, "plan": o.billing_plan,
                  "members": o.member_count} for o in state.enterprise_core.organizations.values()]
+
+    # ─── Access Fabric: simulation + command-center monitor ───
+
+    @app.post("/api/v1/access/simulate", tags=["Access"])
+    async def access_simulate(body: Dict[str, Any]):
+        """Simulate an access decision (no side effects). Body: profile/action/..."""
+        from aurora.access import simulate as _simulate
+
+        try:
+            return _simulate(
+                body.get("profile", {}), body.get("action", "READ"),
+                classification=body.get("classification", "INTERNAL"),
+                purpose=body.get("purpose", ""), zone=body.get("zone", ""),
+                resource_scope_ok=body.get("resource_scope_ok", True),
+                approval=body.get("approval"), is_human=body.get("is_human", False),
+                amount_usd=float(body.get("amount_usd", 0.0) or 0.0),
+                actor_role=body.get("actor_role", ""),
+            )
+        except Exception as e:
+            raise HTTPException(422, str(e))
+
+    @app.get("/api/v1/access/monitor", tags=["Access"])
+    async def access_monitor():
+        """Access command center: decisions aggregated from the audit log."""
+        if not state.enterprise_core:
+            raise HTTPException(503, "Enterprise not initialized")
+        log = getattr(state.enterprise_core, "_audit_log", []) or []
+        decisions = [e for e in log if e.get("action") == "access.decision"]
+        denies = [e for e in decisions if (e.get("details", {}) or {}).get("result") == "deny"]
+        by_code: Dict[str, int] = {}
+        for e in denies:
+            code = (e.get("details", {}) or {}).get("code", "deny")
+            by_code[code] = by_code.get(code, 0) + 1
+        return {
+            "access_decisions": len(decisions),
+            "denies": len(denies),
+            "denies_by_code": by_code,
+            "recent": decisions[-20:],
+        }
 
     return app
 
