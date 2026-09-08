@@ -11,6 +11,8 @@ Read order for new engineers:
 8. `builtin-agents.md` — AURORA → ALPHA 01/02/03 → Pantheon → Tools (mandates, authority, verification).
 9. `proving-slice.md` — Brief→Learning slice: swimlanes + message schemas + pass criteria.
 10. `implementation-plan.md` — reuse map + 5 phases + acceptance + out-of-scope.
+11. `agency-intelligence-model.md` — full-service findings v1 (people→capabilities with mapping targets).
+12. `agency-intelligence-research.md` — Enterprise OS research + PHASE 0 classifications.
 
 Related (non-frozen context): `overview.md`, `crp.md`, `pdftool.md`.
 

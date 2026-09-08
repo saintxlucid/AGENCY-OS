@@ -159,6 +159,67 @@ class Quote:
 
 
 # ═══════════════════════════════════════════════════════════════
+# 1b. COMMERCIAL — Pitch / Scope(SOW) / ChangeOrder / Retainer (full-service)
+# Additive: money chain with parent linkage, no orphans. Graph mirrors:
+# lead CONVERTS_TO pitch SCOPES scope AUTHORIZES work; scope changed via
+# ChangeOrder; retainer RETAINS client. See agency-intelligence-model F-03.
+# ═══════════════════════════════════════════════════════════════
+
+class PitchStatus(Enum):
+    DRAFT = "draft"; SUBMITTED = "submitted"; WON = "won"; LOST = "lost"
+
+@dataclass
+class Pitch:
+    pitch_id: str; org_id: str; name: str
+    lead_id: Optional[str] = None; opportunity_id: Optional[str] = None
+    status: PitchStatus = PitchStatus.DRAFT
+    value: float = 0.0; probability: float = 0.0
+    owner_id: Optional[str] = None; reviewer_id: Optional[str] = None
+    submitted_at: Optional[str] = None; decided_at: Optional[str] = None
+    decision_rationale: Optional[str] = None
+    created_at: str = field(default_factory=_now)
+
+class ScopeStatus(Enum):
+    DRAFT = "draft"; PROPOSED = "proposed"; APPROVED = "approved"; CHANGED = "changed"
+
+@dataclass
+class Scope:
+    scope_id: str; org_id: str; name: str
+    client_id: Optional[str] = None; pitch_id: Optional[str] = None
+    project_id: Optional[str] = None
+    status: ScopeStatus = ScopeStatus.DRAFT
+    estimate: float = 0.0; agreed_value: float = 0.0
+    terms: str = "fixed"  # fixed | time_and_materials
+    items: List[Dict] = field(default_factory=list)
+    signed_at: Optional[str] = None; signed_by: Optional[str] = None
+    created_at: str = field(default_factory=_now)
+
+class ChangeOrderStatus(Enum):
+    DRAFT = "draft"; PROPOSED = "proposed"; APPROVED = "approved"; REJECTED = "rejected"
+
+@dataclass
+class ChangeOrder:
+    co_id: str; org_id: str; scope_id: str
+    title: str; delta_hours: float = 0.0; delta_cost: float = 0.0
+    reason: str = ""; status: ChangeOrderStatus = ChangeOrderStatus.DRAFT
+    requested_by: Optional[str] = None; approved_by: Optional[str] = None
+    approval_id: Optional[str] = None
+    created_at: str = field(default_factory=_now)
+
+class RetainerStatus(Enum):
+    DRAFT = "draft"; ACTIVE = "active"; RENEWED = "renewed"; CHURNED = "churned"
+
+@dataclass
+class Retainer:
+    retainer_id: str; org_id: str; client_id: str; name: str
+    status: RetainerStatus = RetainerStatus.DRAFT
+    monthly_value: float = 0.0; start_date: Optional[str] = None
+    end_date: Optional[str] = None; owner_id: Optional[str] = None
+    churn_reason: Optional[str] = None; learning_id: Optional[str] = None
+    created_at: str = field(default_factory=_now)
+
+
+# ═══════════════════════════════════════════════════════════════
 # 4. HUMAN RESOURCES — Employees, Recruitment, Performance
 # ═══════════════════════════════════════════════════════════════
 
@@ -362,6 +423,12 @@ class ERPCore:
         self.expenses: Dict[str, Expense] = {}
         self.quotes: Dict[str, Quote] = {}
 
+        # Commercial (full-service money chain)
+        self.pitches: Dict[str, Pitch] = {}
+        self.scopes: Dict[str, Scope] = {}
+        self.change_orders: Dict[str, ChangeOrder] = {}
+        self.retainers: Dict[str, Retainer] = {}
+
         # HR
         self.employees: Dict[str, Employee] = {}
         self.candidates: Dict[str, Candidate] = {}
@@ -421,6 +488,44 @@ class ERPCore:
         weighted = sum(d.value * d.probability for d in deals)
         return {"total_value": total, "weighted_value": weighted, "deal_count": len(deals)}
 
+    # ─── Commercial linkage (full-service money chain, no orphans) ───
+
+    def assert_pitch_linkage(self, pitch: Pitch) -> None:
+        if not pitch.lead_id and not pitch.opportunity_id:
+            raise ValueError("orphan pitch blocked: lead_id or opportunity_id required")
+
+    def assert_scope_linkage(self, scope: Scope) -> None:
+        if not scope.client_id and not scope.pitch_id:
+            raise ValueError("orphan scope blocked: client_id or pitch_id required")
+        if scope.pitch_id and scope.pitch_id in self.pitches:
+            parent = self.pitches[scope.pitch_id]
+            st = parent.status.value if hasattr(parent.status, "value") else str(parent.status)
+            if st != "won":
+                raise ValueError(f"scope blocked: pitch {scope.pitch_id} is {st}, must be won")
+
+    def assert_change_order_linkage(self, co: ChangeOrder) -> None:
+        if co.scope_id not in self.scopes:
+            raise ValueError(f"orphan change order blocked: scope {co.scope_id} unknown")
+        parent = self.scopes[co.scope_id]
+        st = parent.status.value if hasattr(parent.status, "value") else str(parent.status)
+        if st not in ("approved", "changed"):
+            raise ValueError(f"change order blocked: scope {co.scope_id} is {st}, must be approved")
+
+    def assert_retainer_linkage(self, retainer: Retainer) -> None:
+        if not retainer.client_id:
+            raise ValueError("orphan retainer blocked: client_id required")
+        if retainer.monthly_value <= 0:
+            raise ValueError("orphan retainer blocked: monthly_value must be > 0")
+
+    def get_commercial_pipeline(self, org_id: str) -> Dict:
+        pitches = [p for p in self.pitches.values() if p.org_id == org_id]
+        open_value = sum(p.value for p in pitches
+                         if (p.status.value if hasattr(p.status, "value") else str(p.status)) in ("draft", "submitted"))
+        return {"pitches": len(pitches), "open_value": round(open_value, 2),
+                "scopes": len([s for s in self.scopes.values() if s.org_id == org_id]),
+                "change_orders": len([c for c in self.change_orders.values() if c.org_id == org_id]),
+                "retainers": len([r for r in self.retainers.values() if r.org_id == org_id])}
+
     def get_profitability(self, org_id: str, project_id: str) -> Dict:
         project_tasks = [t for t in self.tasks.values() if t.project_id == project_id]
         costs = sum(t.cost for t in project_tasks)
@@ -436,6 +541,8 @@ class ERPCore:
                          "time_entries": len(self.time_entries)},
             "finance": {"invoices": len(self.invoices), "expenses": len(self.expenses),
                          "quotes": len(self.quotes)},
+            "commercial": {"pitches": len(self.pitches), "scopes": len(self.scopes),
+                             "change_orders": len(self.change_orders), "retainers": len(self.retainers)},
             "hr": {"employees": len(self.employees), "candidates": len(self.candidates),
                     "leave_requests": len(self.leave_requests)},
             "assets": len(self.assets),

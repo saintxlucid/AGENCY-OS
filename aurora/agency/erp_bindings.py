@@ -112,3 +112,59 @@ def assert_invoice_linkage(client_id: str | None, total: float) -> None:
         raise ValueError("orphan invoice blocked: client_id required")
     if total <= 0:
         raise ValueError("orphan invoice blocked: total must be > 0")
+
+
+# ─── Commercial: Pitch / Scope / Retainer / Launch / Distribution ───
+# ERP enums use the canonical vocabulary directly (PitchStatus/ScopeStatus/
+# RetainerStatus mirror schema states), so these assert straight through
+# can_transition. Lead keeps its richer CRM vocabulary with an alias map.
+
+ERP_LEAD_TO_AGENCY: Dict[str, str] = {
+    "new": "new",
+    "contacted": "new",      # outreach refinement of new
+    "qualified": "qualified",
+    "proposal": "pitched",    # proposal out ≈ pitched
+    "negotiation": "pitched",
+    "pitched": "pitched",
+    "won": "won",
+    "lost": "lost",
+}
+
+
+def _raw(status) -> str:
+    return status.value if hasattr(status, "value") else str(status)
+
+
+def assert_legal_transition(kind: str, frm, to) -> None:
+    """Generic canonical gate for pitch/scope/retainer/launch/distribution/lead."""
+    f, t = _raw(frm), _raw(to)
+    if kind == "lead":
+        f, t = ERP_LEAD_TO_AGENCY.get(f, f), ERP_LEAD_TO_AGENCY.get(t, t)
+        if f == t and f in ("new", "pitched"):
+            return  # intra-state CRM refinement
+    if not can_transition(kind, f, t):
+        raise ValueError(f"illegal {kind} transition {f}→{t}")
+
+
+def assert_legal_pitch_transition(frm, to) -> None:
+    assert_legal_transition("pitch", frm, to)
+
+
+def assert_legal_scope_transition(frm, to) -> None:
+    assert_legal_transition("scope", frm, to)
+
+
+def assert_legal_retainer_transition(frm, to) -> None:
+    assert_legal_transition("retainer", frm, to)
+
+
+def assert_legal_launch_transition(frm, to) -> None:
+    assert_legal_transition("launch", frm, to)
+
+
+def assert_legal_distribution_transition(frm, to) -> None:
+    assert_legal_transition("distribution", frm, to)
+
+
+def assert_legal_lead_transition(frm, to) -> None:
+    assert_legal_transition("lead", frm, to)

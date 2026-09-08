@@ -59,3 +59,10 @@ Date: 2026-09-08. Method: file:line evidence. Rule: wrap > refactor > deprecate.
 - Index: `docs/architecture/README.md` (read order; authority-model-v1 = design spec, authority-v1 = implementation record).
 - Release notes: `CHANGELOG.md [Unreleased]` (added/fixed/verification: 245 passed / 73 skipped / 0 failed).
 - Personal files never committed: `.mcp.json`, `ASTRA.md`, `SOUL.md`, `IDENTITY.md`, `USER.md`, `HEARTBEAT.md`, `Scripts/`, `Skills/`, `Tools/`, `Templates/`, `TOOLS.md`, media/data dirs (gitignore rooted).
+
+## Documentation checkpoint 2 (2026-09-08) — full-service commercial
+- Intake filled: `agency-intelligence-model.md` v1 findings (titles→capabilities, 17 sections with mapping targets).
+- Research persisted: `agency-intelligence-research.md` (Enterprise OS north star + PHASE 0 per-concept classifications).
+- Commercial ERP: Pitch/Scope/ChangeOrder/Retainer models (`enterprise/erp.py §1b`) + canonical transition adapters (`erp_bindings`: lead alias map, pitch/scope/retainer/launch/distribution gates).
+- Sovereign gates: `preflight_scope_change` (numbered ChangeOrder + delta approval) + `preflight_launch` (QC + exact version + receipt path).
+- Verification: 246 passed / 73 skipped / 0 failed. Index extended (README items 11–12).

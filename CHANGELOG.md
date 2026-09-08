@@ -27,6 +27,11 @@
 
 ### Verification
 - 318 passed (+316 subtests) / 0 failed (`pytest tests/ -o addopts=""`)
+- 246 passed / 73 skipped / 0 failed (`pytest tests -q --no-cov`, 2026-09-08 documentation checkpoint)
+- Full-service spine: Lead→Pitch→Scope→Client→Brief→Strategy→Creative→Production→Approval→Launch→Distribution→Performance→Learning→Retainer/Growth (additive; existing nodes untouched)
+- Commercial chain: Pitch / Scope(SOW) / ChangeOrder / Retainer with parent linkage, no orphans (`aurora/enterprise/erp.py §1b` + `erp_bindings` adapters)
+- Gates: scope-change requires numbered ChangeOrder + delta approval; launch re-verifies QC + exact version + receipt path
+- Intelligence findings v1 mapped (`agency-intelligence-model.md` + research classifications)
 
 ---
 

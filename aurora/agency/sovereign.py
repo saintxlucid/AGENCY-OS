@@ -188,3 +188,41 @@ class Sovereign:
             return PreflightResult(False, "missing_evidence",
                                    "proposal requires ≥1 evidence_id")
         return PreflightResult(True, "ok", "evidence present")
+
+    def preflight_scope_change(self, change_order_id: str | None,
+                               approval: Optional[Dict[str, Any]],
+                               amount_usd: float = 0.0,
+                               is_human: bool = False,
+                               actor_role: str = "") -> PreflightResult:
+        """Scope delta gate (F-03/F-04): unsigned deltas are margin bleed.
+
+        Requires a numbered ChangeOrder on an approved scope + approval for the
+        delta itself (spend thresholds apply via check())."""
+        if not change_order_id:
+            return PreflightResult(False, "missing_evidence",
+                                   "scope change requires a change order id", "AD")
+        return self.check("scope.change", is_human=is_human, approval=approval,
+                          amount_usd=amount_usd, actor_role=actor_role)
+
+    def preflight_launch(self, qc_passed: bool, approved_version: int | None,
+                         executing_version: int,
+                         approval: Optional[Dict[str, Any]],
+                         receipt_path: str = "",
+                         is_human: bool = False) -> PreflightResult:
+        """Launch release gate (F-02/F-04): QC + exact version + receipt path.
+
+        Launch executes the publish decision; it re-verifies rather than trusting it."""
+        if not qc_passed:
+            return PreflightResult(False, "qc_failed",
+                                   "launch blocked: asset not QC-passed", "Producer")
+        if approved_version is None:
+            return PreflightResult(False, "need_approval",
+                                   "launch needs an approved asset version", "human L3")
+        if approved_version != executing_version:
+            return PreflightResult(False, "version_mismatch",
+                                   f"approved v{approved_version} != executing v{executing_version}")
+        if not receipt_path:
+            return PreflightResult(False, "missing_evidence",
+                                   "launch blocked: no receipt path (no receipt, didn't happen)",
+                                   "Producer")
+        return self.check("launch.release", is_human=is_human, approval=approval)
