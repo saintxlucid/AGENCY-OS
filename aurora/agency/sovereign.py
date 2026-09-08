@@ -81,7 +81,30 @@ class Sovereign:
         is_human: bool = False,
         approval: Optional[Dict[str, Any]] = None,
         amount_usd: float = 0.0,
+        access_profile: Any = None,
+        classification: str = "",
+        purpose: str = "",
+        purpose_mismatch: bool = False,
+        rbac_allowed: Any = None,
     ) -> PreflightResult:
+        # ABAC pre-check (access fabric) before policy evaluation. Sovereign adjudicates final.
+        # RBAC is one input: explicit False denies immediately; True/None continues.
+        if rbac_allowed is False:
+            return PreflightResult(False, "deny_permission",
+                                   "RBAC denies baseline permission", "")
+        if access_profile is not None:
+            try:
+                from aurora.agency.access import decide as _abac
+            except Exception as e:
+                return PreflightResult(False, "deny_permission",
+                                       f"access fabric unavailable: {e}", "")
+            verb = action.split(".")[-1] if "." in action else action
+            d = _abac(access_profile, verb, classification or "INTERNAL",
+                      purpose=purpose,
+                      is_sensitive_purpose_mismatch=purpose_mismatch)
+            if not d.get("allowed"):
+                return PreflightResult(False, str(d.get("code", "deny_permission")),
+                                       str(d.get("detail", "")), "")
         base = action.split(".")[0] if "." in action else action
         # Destructive always needs approval record
         if base in DESTRUCTIVE_ACTIONS or action in DESTRUCTIVE_ACTIONS:

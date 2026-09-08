@@ -32,8 +32,16 @@ READ_PREFIXES = ("/api/v1/health", "/api/v1/status", "/api/v1/projects",
 
 def check_mutating_route(method: str, path: str, is_human: bool = False,
                          approval: dict | None = None,
-                         sovereign: Sovereign | None = None) -> dict:
-    """Gate helper for FastAPI dependencies. Returns {gated, allowed, code}."""
+                         sovereign: Sovereign | None = None,
+                         access_profile: object | None = None,
+                         classification: str = "",
+                         purpose: str = "",
+                         purpose_mismatch: bool = False,
+                         rbac_allowed: object | None = None) -> dict:
+    """Gate helper for FastAPI dependencies. Returns {gated, allowed, code}.
+
+    ABAC pre-check runs inside Sovereign.check when access_profile is given;
+    RBAC False denies immediately. Reads stay open per RBAC (ungated here)."""
     sov = sovereign or Sovereign()
     for (m, prefix), rule in MUTATING_ROUTES.items():
         if method == m and path.startswith(prefix):
@@ -41,6 +49,9 @@ def check_mutating_route(method: str, path: str, is_human: bool = False,
             if rule.get("human_only") and not is_human and not (approval or {}).get("decision"):
                 return {"gated": True, "allowed": False, "code": "need_approval",
                         "action": action}
-            r = sov.check(action, is_human=is_human, approval=approval)
+            r = sov.check(action, is_human=is_human, approval=approval,
+                          access_profile=access_profile, classification=classification,
+                          purpose=purpose, purpose_mismatch=purpose_mismatch,
+                          rbac_allowed=rbac_allowed)
             return {"gated": True, "allowed": r.allowed, "code": r.code, "action": action}
     return {"gated": False, "allowed": True, "code": "read", "action": "read"}
